@@ -6,6 +6,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using NzbDrone.Common;
+using NzbDrone.Core.Model;
 using NzbDrone.Core.Providers;
 using NzbDrone.Core.Providers.Core;
 using NzbDrone.Core.Repository;
@@ -110,7 +111,7 @@ namespace NzbDrone.Core.Test.ProviderTests
 
             var fakeSeries = Builder<Series>.CreateListOfSize(5)
                 .All()
-                .With(s => s.IsDaily = false)
+                .With(s => s.SeriesType = SeriesType.Daily)
                 .Build();
 
             Db.InsertMany(fakeSeries);
@@ -125,7 +126,7 @@ namespace NzbDrone.Core.Test.ProviderTests
             //Assert
             var result = Db.Fetch<Series>();
 
-            result.Where(s => s.IsDaily).Should().HaveCount(5);
+            result.Where(s => s.SeriesType == SeriesType.Daily).Should().HaveCount(5);
         }
 
         [Test]
@@ -135,7 +136,7 @@ namespace NzbDrone.Core.Test.ProviderTests
 
             var fakeSeries = Builder<Series>.CreateListOfSize(5)
                 .All()
-                .With(s => s.IsDaily = false)
+                .With(s => s.SeriesType = SeriesType.Standard)
                 .TheFirst(1)
                 .With(s => s.SeriesId = 10)
                 .TheNext(1)
@@ -156,8 +157,8 @@ namespace NzbDrone.Core.Test.ProviderTests
             //Assert
             var result = Db.Fetch<Series>();
 
-            result.Where(s => !s.IsDaily).Should().HaveCount(3);
-            result.Where(s => s.IsDaily).Should().HaveCount(2);
+            result.Where(s => s.SeriesType != SeriesType.Daily).Should().HaveCount(3);
+            result.Where(s => s.SeriesType == SeriesType.Daily).Should().HaveCount(2);
         }
 
         [Test]
@@ -167,10 +168,10 @@ namespace NzbDrone.Core.Test.ProviderTests
 
             var fakeSeries = Builder<Series>.CreateListOfSize(5)
                 .All()
-                .With(s => s.IsDaily = false)
+                .With(s => s.SeriesType = SeriesType.Standard)
                 .TheFirst(1)
                 .With(s => s.SeriesId = 10)
-                .With(s => s.IsDaily = true)
+                .With(s => s.SeriesType = SeriesType.Daily)
                 .TheNext(1)
                 .With(s => s.SeriesId = 11)
                 .TheNext(1)
@@ -189,8 +190,8 @@ namespace NzbDrone.Core.Test.ProviderTests
             //Assert
             var result = Db.Fetch<Series>();
 
-            result.Where(s => s.IsDaily).Should().HaveCount(3);
-            result.Where(s => !s.IsDaily).Should().HaveCount(2);
+            result.Where(s => s.SeriesType == SeriesType.Daily).Should().HaveCount(3);
+            result.Where(s => s.SeriesType == SeriesType.Standard).Should().HaveCount(2);
         }
 
         [Test]

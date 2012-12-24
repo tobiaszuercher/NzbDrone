@@ -158,7 +158,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         public void SeasonSearch_should_skip_daily_series()
         {
             //Setup
-            _series.IsDaily = true;
+            _series.SeriesType = SeriesType.Daily;
 
             Mocker.GetMock<SeriesProvider>().Setup(s => s.GetSeries(1)).Returns(_series);
 
@@ -173,7 +173,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         public void PartialSeasonSearch_should_skip_daily_series()
         {
             //Setup
-            _series.IsDaily = true;
+            _series.SeriesType = SeriesType.Daily;
 
             Mocker.GetMock<SeriesProvider>().Setup(s => s.GetSeries(1)).Returns(_series);
 
@@ -188,7 +188,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         public void EpisodeSearch_should_skip_if_air_date_is_null_and_is_a_daily_series()
         {
             //Setup
-            _series.IsDaily = true;
+            _series.SeriesType = SeriesType.Daily;
             var episode = _episodes.First();
             episode.AirDate = null;
             episode.Series = _series;

@@ -241,7 +241,7 @@ namespace NzbDrone.Core.Test.ProviderTests
         public string create_proper_sab_daily_titles(bool proper)
         {
             var series = Builder<Series>.CreateNew()
-                    .With(c => c.IsDaily = true)
+                    .With(c => c.SeriesType = SeriesType.Daily)
                     .With(c => c.Title = "My Series Name")
                     .Build();
 

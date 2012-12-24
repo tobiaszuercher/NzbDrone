@@ -60,7 +60,7 @@ namespace NzbDrone.Core.Providers
         {
             var sql = @"SELECT SearchHistory.Id, SearchHistory.SeriesId, SearchHistory.SeasonNumber,
                         SearchHistory.EpisodeId, SearchHistory.SearchTime,
-                        Series.Title as SeriesTitle, Series.IsDaily,
+                        Series.Title as SeriesTitle, Series.SeriesType,
                         Episodes.EpisodeNumber, Episodes.SeasonNumber, Episodes.Title as EpisodeTitle,
                         Episodes.AirDate,
                         Count(SearchHistoryItems.Id) as TotalItems,
@@ -74,7 +74,7 @@ namespace NzbDrone.Core.Providers
                         ON SearchHistoryItems.SearchHistoryId = SearchHistory.Id
                         GROUP BY SearchHistory.Id, SearchHistory.SeriesId, SearchHistory.SeasonNumber,
                         SearchHistory.EpisodeId, SearchHistory.SearchTime,
-                        Series.Title, Series.IsDaily,
+                        Series.Title, Series.SeriesType,
                         Episodes.EpisodeNumber, Episodes.SeasonNumber, Episodes.Title,
                         Episodes.AirDate";
 
@@ -85,7 +85,7 @@ namespace NzbDrone.Core.Providers
         {
             var sql = @"SELECT SearchHistory.Id, SearchHistory.SeriesId, SearchHistory.SeasonNumber,
                         SearchHistory.EpisodeId, SearchHistory.SearchTime,
-                        Series.Title as SeriesTitle, Series.IsDaily,
+                        Series.Title as SeriesTitle, Series.SeriesType,
                         Episodes.EpisodeNumber, Episodes.SeasonNumber, Episodes.Title as EpisodeTitle,
                         Episodes.AirDate
                         FROM SearchHistory

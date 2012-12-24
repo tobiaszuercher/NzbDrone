@@ -33,7 +33,7 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
             fakeSeries = Builder<Series>.CreateNew().Build();
 
             fakeDailySeries = Builder<Series>.CreateNew()
-                .With(c => c.IsDaily = true)
+                .With(c => c.SeriesType = SeriesType.Daily)
                 .Build();
 
             fakeEpisode = Builder<Episode>.CreateNew()

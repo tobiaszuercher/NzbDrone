@@ -113,7 +113,7 @@ namespace NzbDrone.Core.Providers
                 return seasonResult;
             }
 
-            if (parseResult.Series.IsDaily)
+            if (parseResult.Series.SeriesType == SeriesType.Daily)
             {
                 var dailyResult = String.Format("{0} - {1:yyyy-MM-dd} - {2} [{3}]", seriesTitle,
                                      parseResult.AirDate, parseResult.Episodes.First().Title, parseResult.Quality.Quality);

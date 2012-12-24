@@ -228,6 +228,7 @@
     <Compile Include="Datastore\MigrationLogger.cs" />
     <Compile Include="Datastore\MigrationsHelper.cs" />
     <Compile Include="Datastore\CustomeMapper.cs" />
+    <Compile Include="Datastore\Migrations\Migration20121224.cs" />
     <Compile Include="Datastore\Migrations\Migration20121218.cs" />
     <Compile Include="Datastore\Migrations\Migration20121209.cs" />
     <Compile Include="Datastore\Migrations\Migration20121202.cs" />
@@ -296,6 +297,7 @@
     <Compile Include="Model\Sabnzbd\SabModel.cs" />
     <Compile Include="Model\Sabnzbd\SabQueueItem.cs" />
     <Compile Include="Model\Sabnzbd\SabVersionModel.cs" />
+    <Compile Include="Model\SeriesType.cs" />
     <Compile Include="Model\StatsModel.cs" />
     <Compile Include="Model\TvRage\TvRageEpisode.cs" />
     <Compile Include="Model\TvRage\TvRageSearchResult.cs" />

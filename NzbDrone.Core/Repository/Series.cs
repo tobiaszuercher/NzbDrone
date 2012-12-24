@@ -42,8 +42,6 @@ namespace NzbDrone.Core.Repository
 
         public string BannerUrl { get; set; }
 
-        public bool IsDaily { get; set; }
-
         public BacklogSettingType BacklogSetting { get; set; }
 
         public string Network { get; set; }
@@ -57,6 +55,8 @@ namespace NzbDrone.Core.Repository
         public string TvRageTitle { get; set; }
 
         public int UtcOffset { get; set; }
+
+        public SeriesType SeriesType { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="Series"/> is hidden.

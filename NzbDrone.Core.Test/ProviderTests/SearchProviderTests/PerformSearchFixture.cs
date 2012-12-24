@@ -218,7 +218,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         public void PerformSearch_for_daily_episode_should_call_FetchEpisode()
         {
             //Setup
-            _series.IsDaily = true;
+            _series.SeriesType = SeriesType.Daily;
 
             //Act
             var result = Mocker.Resolve<SearchProvider>().PerformDailyEpisodeSearch(_series, _episodes.First());

@@ -37,7 +37,7 @@ namespace NzbDrone.Core.Providers
             if (seriesIds.Any())
             {
                 var dailySeriesString = String.Join(", ", seriesIds);
-                var sql = String.Format("UPDATE Series SET IsDaily = 1 WHERE SeriesId in ({0})", dailySeriesString);
+                var sql = String.Format("UPDATE Series SET SeriesType = 1 WHERE SeriesId in ({0})", dailySeriesString);
 
                 _database.Execute(sql);
             }

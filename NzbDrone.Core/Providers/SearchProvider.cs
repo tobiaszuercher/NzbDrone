@@ -63,7 +63,7 @@ namespace NzbDrone.Core.Providers
                 return new List<int>();
             }
 
-            if (series.IsDaily)
+            if (series.SeriesType == SeriesType.Daily)
             {
                 logger.Trace("Daily series detected, skipping season search: {0}", series.Title);
                 return new List<int>();
@@ -139,7 +139,7 @@ namespace NzbDrone.Core.Providers
                 return new List<int>();
             }
 
-            if (series.IsDaily)
+            if (series.SeriesType == SeriesType.Daily)
             {
                 logger.Trace("Daily series detected, skipping season search: {0}", series.Title);
                 return new List<int>();
@@ -208,7 +208,7 @@ namespace NzbDrone.Core.Providers
                                         EpisodeId = episodeId
                                    };
 
-            if (episode.Series.IsDaily)
+            if (episode.Series.SeriesType == SeriesType.Daily)
             {
                 if (!episode.AirDate.HasValue)
                 {
