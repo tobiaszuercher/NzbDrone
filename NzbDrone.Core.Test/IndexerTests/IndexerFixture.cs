@@ -48,6 +48,7 @@ namespace NzbDrone.Core.Test.IndexerTests
         [TestCase("nzbindex.xml")]
         [TestCase("nzbclub.xml")]
         [TestCase("omgwtfnzbs.xml")]
+        [TestCase("fanzub.xml")]
         public void parse_feed_xml(string fileName)
         {
             Mocker.GetMock<HttpProvider>()
@@ -227,6 +228,22 @@ namespace NzbDrone.Core.Test.IndexerTests
 
             parseResults.Should().HaveCount(1);
             parseResults[0].Size.Should().Be(236820890);
+        }
+
+        [Test]
+        public void size_fanzub()
+        {
+            WithConfiguredIndexers();
+
+            Mocker.GetMock<HttpProvider>()
+                          .Setup(h => h.DownloadStream("http://www.fanzub.com/rss?cat=anime", It.IsAny<NetworkCredential>()))
+                          .Returns(File.OpenRead(".\\Files\\Rss\\SizeParsing\\fanzub.xml"));
+
+            //Act
+            var parseResults = Mocker.Resolve<Fanzub>().FetchRss();
+
+            parseResults.Should().HaveCount(1);
+            parseResults[0].Size.Should().Be(594941051);
         }
 
         [Test]

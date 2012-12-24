@@ -94,6 +94,7 @@ namespace NzbDrone.Core
             Kernel.Bind<IndexerBase>().To<NzbClub>();
             Kernel.Bind<IndexerBase>().To<Omgwtfnzbs>();
             Kernel.Bind<IndexerBase>().To<Nzbx>();
+            Kernel.Bind<IndexerBase>().To<Fanzub>();
 
             var indexers = Kernel.GetAll<IndexerBase>();
             Kernel.Get<IndexerProvider>().InitializeIndexers(indexers.ToList());

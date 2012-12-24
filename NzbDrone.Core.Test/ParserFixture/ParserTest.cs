@@ -415,6 +415,7 @@ namespace NzbDrone.Core.Test.ParserFixture
         [TestCase("[Commie]_Rinne_no_Lagrange_-_15_[E76552EA]", "Rinne_no_Lagrange", 15, "Commie")]
         [TestCase("[HorribleSubs]_Hunter_X_Hunter_-_33_[720p]", "Hunter_X_Hunter", 33, "HorribleSubs")]
         [TestCase("[HorribleSubs]_Fairy_Tail_-_145_[720p]", "Fairy_Tail", 145, "HorribleSubs")]
+        [TestCase("[HorribleSubs] Tonari no Kaibutsu-kun - 13 [1080p].mkv", "Tonari no Kaibutsu-kun", 13, "HorribleSubs")]
         public void parse_anime(string postTitle, string title, int absoluteEpisodeNumber, string subGroup)
         {
             var result = Parser.ParseTitle(postTitle);

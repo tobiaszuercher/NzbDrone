@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>All :: Fanzub</title>
+    <link>http://www.fanzub.com/</link>
+    <description>A Usenet Search Engine for Japanese Media</description>
+    <language>en-us</language>
+    <atom:link href="http://fanzub.com/rss?cat=anime" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[HorribleSubs] Tonari no Kaibutsu-kun - 13 [1080p].mkv</title>
+      <link>http://fanzub.com/nzb/216767</link>
+      <description>&lt;i&gt;Age&lt;/i&gt;: 0 days&lt;br /&gt;&lt;i&gt;Size&lt;/i&gt;: 567.38 MiB&lt;br /&gt;&lt;i&gt;Parts&lt;/i&gt;: 100%&lt;br /&gt;&lt;i&gt;Files&lt;/i&gt;: 1 nfo, 1 nzb, 9 par2, 1 sfv, 12 split&lt;br /&gt;&lt;i&gt;Subject&lt;/i&gt;: Tonari no Kaibutsu - kun - 13 (1080p|.mkv|h264|aac) ~bY HorribleSubs [1/1] - &quot;[HorribleSubs]_Tonari_no_Kaibutsu-kun_-_13_[1080p].mkv.nzb&quot; yEnc (1/1)</description>
+      <category>Anime</category>
+      <pubDate>Mon, 24 Dec 2012 19:08:41 +0000</pubDate>
+      <enclosure url="http://fanzub.com/nzb/216767/HorribleSubs%20Tonari%20no%20Kaibutsu-kun%20-%2013%201080p.nzb" length="594946285" type="application/x-nzb" />
+      <guid isPermaLink="false">http://fanzub.com/nzb/216767</guid>
+    </item>
+  </channel>
+</rss>
