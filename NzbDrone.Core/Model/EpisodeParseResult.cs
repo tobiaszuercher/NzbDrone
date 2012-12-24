@@ -49,7 +49,11 @@ namespace NzbDrone.Core.Model
 
         public bool SceneSource { get; set; }
 
-        public IList<Episode> Episodes { get; set; } 
+        public IList<Episode> Episodes { get; set; }
+
+        public Int32 AbsoluteEpisodeNumber { get; set; }
+
+        public String SubGroup { get; set; }
 
         public override string ToString()
         {

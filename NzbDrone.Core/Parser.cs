@@ -18,7 +18,7 @@ namespace NzbDrone.Core
         private static readonly Regex[] ReportTitleRegex = new[]
                                 {
                                     //Anime
-                                    new Regex(@"^\[(?<fansub>.+?)\][_-](?<title>.+?)[_-]+(?<absoluteEpisode>\d+)",
+                                    new Regex(@"^\[(?<subgroup>.+?)\][_-](?<title>.+?)[_-]+(?<absoluteepisode>\d+)",
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                                     //Episodes with airdate
@@ -201,7 +201,8 @@ namespace NzbDrone.Core
 
                     else if(matchGroup.Groups["absoluteepisode"].Captures.Cast<Capture>().Any())
                     {
-                        
+                        parsedEpisode.AbsoluteEpisodeNumber = Convert.ToInt32(matchCollection[0].Groups["absoluteepisode"].Value);
+                        parsedEpisode.SubGroup = matchCollection[0].Groups["subgroup"].Value;
                     }
 
                     else

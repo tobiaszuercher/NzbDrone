@@ -407,5 +407,22 @@ namespace NzbDrone.Core.Test.ParserFixture
             Parser.ParseTitle(title).Should().BeNull();
             ExceptionVerification.IgnoreWarns();
         }
+
+        [TestCase("[SubDESU]_High_School_DxD_07_(1280x720_x264-AAC)_[6B7FD717]", "High School DxD", 7, "SubDESU")]
+        [TestCase("[Chihiro]_Working!!_-_06_[848x480_H.264_AAC][859EEAFA]", "Working!!", 6, "Chihiro")]
+        [TestCase("[Commie]_Senki_Zesshou_Symphogear_-_11_[65F220B4]", "Senki_Zesshou_Symphogear", 11, "Commie")]
+        [TestCase("[Underwater]_Rinne_no_Lagrange_-_12_(720p)_[5C7BC4F9]", "Rinne_no_Lagrange", 12, "Underwater")]
+        [TestCase("[Commie]_Rinne_no_Lagrange_-_15_[E76552EA]", "Rinne_no_Lagrange", 15, "Commie")]
+        [TestCase("[HorribleSubs]_Hunter_X_Hunter_-_33_[720p]", "Hunter_X_Hunter", 33, "HorribleSubs")]
+        [TestCase("[HorribleSubs]_Fairy_Tail_-_145_[720p]", "Fairy_Tail", 145, "HorribleSubs")]
+        public void parse_anime(string postTitle, string title, int absoluteEpisodeNumber, string subGroup)
+        {
+            var result = Parser.ParseTitle(postTitle);
+            result.Should().NotBeNull();
+            result.AbsoluteEpisodeNumber.Should().Be(absoluteEpisodeNumber);
+            result.CleanTitle.Should().Be(Parser.NormalizeTitle(title));
+            result.OriginalString.Should().Be(postTitle);
+            result.SubGroup.Should().Be(subGroup);
+        }
     }
 }
