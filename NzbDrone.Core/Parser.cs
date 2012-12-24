@@ -17,6 +17,10 @@ namespace NzbDrone.Core
 
         private static readonly Regex[] ReportTitleRegex = new[]
                                 {
+                                    //Anime
+                                    new Regex(@"^\[(?<fansub>.+?)\][_-](?<title>.+?)[_-]+(?<absoluteEpisode>\d+)",
+                                        RegexOptions.IgnoreCase | RegexOptions.Compiled),
+
                                     //Episodes with airdate
                                     new Regex(@"^(?<title>.+?)?\W*(?<airyear>\d{4})\W+(?<airmonth>[0-1][0-9])\W+(?<airday>[0-3][0-9])\W?(?!\\)",
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
@@ -56,11 +60,11 @@ namespace NzbDrone.Core
                                     new Regex(@"^(?<title>.+?)(?:\W+(?:(?:Part\W?|(?<!\d+\W+)e)(?<episode>\d{1,2}(?!\d+)))+)\W?(?!\\)",
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
-                                    //Supports 1103/1113 naming
+                                    //1103/1113 naming
                                     new Regex(@"^(?<title>.+?)?(?:\W?(?<season>(?<!\d+|\(|\[)\d{2})(?<episode>\d{2}(?!p|i|\d+|\)|\])))+\W?(?!\\)",
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
-                                        //Supports Season only releases
+                                    //Season only releases
                                     new Regex(@"^(?<title>.+?)\W(?:S|Season)\W?(?<season>\d{1,2}(?!\d+))\W?(?<extras>EXTRAS|SUBPACK)?(?!\\)",
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled)
                                 };
@@ -194,6 +198,12 @@ namespace NzbDrone.Core
                         var last = Convert.ToInt32(episodeCaptures.Last().Value);
                         parsedEpisode.EpisodeNumbers = Enumerable.Range(first, last - first + 1).ToList();
                     }
+
+                    else if(matchGroup.Groups["absoluteepisode"].Captures.Cast<Capture>().Any())
+                    {
+                        
+                    }
+
                     else
                     {
                         //Check to see if this is an "Extras" or "SUBPACK" release, if it is, return NULL
