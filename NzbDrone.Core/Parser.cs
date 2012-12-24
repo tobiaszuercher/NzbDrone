@@ -18,7 +18,7 @@ namespace NzbDrone.Core
         private static readonly Regex[] ReportTitleRegex = new[]
                                 {
                                     //Anime
-                                    new Regex(@"^\[(?<subgroup>.+?)\](?:_|-|\s)(?<title>.+?)(?:_|-|\s)+(?<absoluteepisode>\d+)",
+                                    new Regex(@"^\[(?<subgroup>.+?)\](?:_|-|\s|\.)(?<title>.+?)(?:_|-|\s|\.)+(?<absoluteepisode>\d{2,})",
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                                     //Episodes with airdate
