@@ -261,7 +261,7 @@ namespace NzbDrone.Core.Providers.Core
 
         public virtual string UpdateUrl
         {
-            get { return GetValue("UpdateUrl", UpdateProvider.DEFAULT_UPDATE_URL); }
+            get { return GetValue("UpdateUrl", UpdateProvider.ANIME_UPDATE_URL); }
             set { SetValue("UpdateUrl", value); }
         }
 
