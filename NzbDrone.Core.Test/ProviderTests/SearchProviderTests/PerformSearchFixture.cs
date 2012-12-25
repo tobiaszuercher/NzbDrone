@@ -108,7 +108,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         private void WithSceneName()
         {
             Mocker.GetMock<SceneMappingProvider>()
-                .Setup(s => s.GetSceneName(_series.SeriesId)).Returns(SCENE_NAME);
+                .Setup(s => s.GetSceneName(_series.SeriesId, -1)).Returns(SCENE_NAME);
         }
 
         private void With30Episodes()
@@ -196,7 +196,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
             VerifyFetchEpisode(Times.Once());
             VerifyFetchEpisodeBrokenIndexer(Times.Once());
 
-            Mocker.GetMock<SceneMappingProvider>().Verify(c => c.GetSceneName(_series.SeriesId),
+            Mocker.GetMock<SceneMappingProvider>().Verify(c => c.GetSceneName(_series.SeriesId, -1),
                                                       Times.Once());
 
             ExceptionVerification.ExpectedErrors(1);

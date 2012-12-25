@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NzbDrone.Core.Model;
 using PetaPoco;
 
 namespace NzbDrone.Core.Repository
@@ -17,5 +18,8 @@ namespace NzbDrone.Core.Repository
 
         [JsonProperty(PropertyName = "Season")]
         public int SeasonNumber { get; set; }
+
+        [JsonIgnore]
+        public SceneMappingSourceType Source { get; set; }
     }
 }

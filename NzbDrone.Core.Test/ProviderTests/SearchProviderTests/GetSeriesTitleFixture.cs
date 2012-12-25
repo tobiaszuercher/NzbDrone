@@ -28,7 +28,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         private void WithSceneName()
         {
             Mocker.GetMock<SceneMappingProvider>()
-                  .Setup(s => s.GetSceneName(_series.SeriesId))
+                  .Setup(s => s.GetSceneName(_series.SeriesId, -1))
                   .Returns("Scandal");
         }
 

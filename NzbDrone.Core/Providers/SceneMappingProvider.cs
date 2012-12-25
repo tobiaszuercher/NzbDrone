@@ -36,8 +36,10 @@ namespace NzbDrone.Core.Providers
                 var mappingsJson = _httpProvider.DownloadString(_configProvider.ServiceRootUrl + "/SceneMapping/Active");
                 var mappings = JsonConvert.DeserializeObject<List<SceneMapping>>(mappingsJson);
 
-                Logger.Debug("Deleting all existing Scene Mappings.");
-                _database.Delete<SceneMapping>(String.Empty);
+                mappings.ForEach(m => m.Source = 0);
+
+                Logger.Debug("Deleting existing Scene Mappings from Source: Services.");
+                _database.Delete<SceneMapping>("WHERE Source = 0");
 
                 Logger.Debug("Adding Scene Mappings");
                 _database.InsertMany(mappings);
@@ -51,16 +53,21 @@ namespace NzbDrone.Core.Providers
             return true;
         }
 
-        public virtual string GetSceneName(int seriesId)
+        public virtual string GetSceneName(int seriesId, int seasonNumber = -1)
         {
             UpdateIfEmpty();
 
-            var item = _database.FirstOrDefault<SceneMapping>("WHERE SeriesId = @0", seriesId);
+            if(seasonNumber >= 0)
+            {
+                var seasonMatch = _database.FirstOrDefault<SceneMapping>("WHERE SeriesId = @0 AND SeasonNumber = @1", seriesId, seasonNumber);
 
-            if (item == null)
-                return null;
+                if(seasonMatch != null)
+                    return seasonMatch.SceneName;
+            }
 
-            return item.SceneName;
+            var map = _database.FirstOrDefault<SceneMapping>("WHERE SeriesId = @0 AND SeasonNumber = -1", seriesId);
+
+            return map == null ? null : map.SceneName;
         }
 
         public virtual Nullable<Int32> GetSeriesId(string cleanName)

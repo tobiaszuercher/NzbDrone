@@ -101,7 +101,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         private void WithSceneName()
         {
             Mocker.GetMock<SceneMappingProvider>()
-                .Setup(s => s.GetSceneName(_series.SeriesId)).Returns(SCENE_NAME);
+                .Setup(s => s.GetSceneName(_series.SeriesId, -1)).Returns(SCENE_NAME);
         }
 
         private void With30Episodes()

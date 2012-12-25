@@ -298,6 +298,7 @@
     <Compile Include="Model\Sabnzbd\SabModel.cs" />
     <Compile Include="Model\Sabnzbd\SabQueueItem.cs" />
     <Compile Include="Model\Sabnzbd\SabVersionModel.cs" />
+    <Compile Include="Model\SceneMappingSourceType.cs" />
     <Compile Include="Model\SeriesType.cs" />
     <Compile Include="Model\StatsModel.cs" />
     <Compile Include="Model\TvRage\TvRageEpisode.cs" />

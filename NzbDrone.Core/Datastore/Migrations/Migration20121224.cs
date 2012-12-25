@@ -16,6 +16,8 @@ namespace NzbDrone.Core.Datastore.Migrations
             Database.ExecuteNonQuery("UPDATE Series SET SeriesType = 1 WHERE IsDaily = 'true'");
 
             Database.RemoveColumn("Series", "IsDaily");
+
+            Database.AddColumn("SceneMappings", new Column("Source", DbType.Int32, ColumnProperty.Null));
         }
     }
 }
