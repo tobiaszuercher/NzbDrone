@@ -4,6 +4,7 @@ using System.IO;
 using NLog;
 using Newtonsoft.Json;
 using NzbDrone.Common;
+using NzbDrone.Core.Model;
 using NzbDrone.Core.Providers.Core;
 using NzbDrone.Core.Repository;
 using PetaPoco;
@@ -115,6 +116,17 @@ namespace NzbDrone.Core.Providers
                 return null;
 
             return item.CleanTitle;
+        }
+
+        public virtual void DeleteMappings(int seriesId, SceneMappingSourceType sourceType)
+        {
+            Logger.Trace("Deleting mappings for seriesId: {0}, with source: {1}", seriesId, sourceType);
+            _database.Delete<SceneMapping>("WHERE SeriesId = @0 AND Source = @1", seriesId, sourceType);
+        }
+
+        public virtual void InsertMappings(List<SceneMapping> mappings)
+        {
+            _database.InsertMany(mappings);
         }
     }
 }

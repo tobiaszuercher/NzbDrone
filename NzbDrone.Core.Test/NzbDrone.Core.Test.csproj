@@ -150,6 +150,8 @@
     <Compile Include="HelperTests\XElementHelperTests\ConvertToDayOfWeekFixture.cs" />
     <Compile Include="ProviderTests\TvRageProviderTests\GetUtcOffsetFixture.cs" />
     <Compile Include="ProviderTests\TvRageProviderTests\SearchSeriesFixture.cs" />
+    <Compile Include="ProviderTests\XemCommunicationProviderTests\GetAlternateNamesFixture.cs" />
+    <Compile Include="ProviderTests\XemProvidedTests\UpdateAlternateNamesFixture.cs" />
     <Compile Include="QualityTypesTest.cs" />
     <Compile Include="EpisodeParseResultTest.cs" />
     <Compile Include="Integeration\ServiceIntegerationFixture.cs" />
@@ -364,6 +366,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\TvRage\SearchResults_empty.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\Xem\Names2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\Xem\Ids.txt">

@@ -7,6 +7,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using NzbDrone.Common;
+using NzbDrone.Core.Exceptions;
 using NzbDrone.Core.Model.Notification;
 using NzbDrone.Core.Providers;
 using NzbDrone.Core.Repository;
@@ -43,7 +44,7 @@ namespace NzbDrone.Core.Test.ProviderTests.XemCommunicationProviderTests
         public void should_throw_when_failure_is_found()
         {
             WithFailureJson();
-            Assert.Throws<Exception>(() => Mocker.Resolve<XemCommunicationProvider>().GetSceneTvdbMappings(12345));
+            Assert.Throws<XemException>(() => Mocker.Resolve<XemCommunicationProvider>().GetSceneTvdbMappings(12345));
         }
 
         [Test]

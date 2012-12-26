@@ -20,7 +20,7 @@ namespace NzbDrone.Core.Test.ProviderTests.XemCommunicationProviderTests
 {
     [TestFixture]
     // ReSharper disable InconsistentNaming
-    public class GetXemSeriesIdsFixture : CoreTest
+    public class GetAlternateNamesFixture : CoreTest
     {
         private void WithFailureJson()
         {
@@ -28,37 +28,37 @@ namespace NzbDrone.Core.Test.ProviderTests.XemCommunicationProviderTests
                     .Returns(File.ReadAllText(@".\Files\Xem\Failure.txt"));
         }
 
-        private void WithIdsJson()
+        private void WithNamesJson()
         {
             Mocker.GetMock<HttpProvider>().Setup(s => s.DownloadString(It.IsAny<String>()))
-                    .Returns(File.ReadAllText(@".\Files\Xem\Ids.txt"));
+                    .Returns(File.ReadAllText(@".\Files\Xem\Names.txt"));
         }
 
-        private void WithMappingsJson()
+        private void WithNames2Json()
         {
             Mocker.GetMock<HttpProvider>().Setup(s => s.DownloadString(It.IsAny<String>()))
-                    .Returns(File.ReadAllText(@".\Files\Xem\Mappings.txt"));
+                    .Returns(File.ReadAllText(@".\Files\Xem\Names2.txt"));
         }
 
         [Test]
         public void should_throw_when_failure_is_found()
         {
             WithFailureJson();
-            Assert.Throws<XemException>(() => Mocker.Resolve<XemCommunicationProvider>().GetXemSeriesIds());
+            Assert.Throws<XemException>(() => Mocker.Resolve<XemCommunicationProvider>().GetAlternateNames(12345));
         }
 
         [Test]
-        public void should_get_list_of_int()
+        public void should_get_list_of_alternateNames()
         {
-            WithIdsJson();
-            Mocker.Resolve<XemCommunicationProvider>().GetXemSeriesIds().Should().NotBeEmpty();
+            WithNamesJson();
+            Mocker.Resolve<XemCommunicationProvider>().GetAlternateNames(12345).Should().NotBeEmpty();
         }
 
         [Test]
-        public void should_have_two_ids()
+        public void should_only_get_us_names()
         {
-            WithIdsJson();
-            Mocker.Resolve<XemCommunicationProvider>().GetXemSeriesIds().Should().HaveCount(2);
+            WithNames2Json();
+            Mocker.Resolve<XemCommunicationProvider>().GetAlternateNames(12345).Should().HaveCount(6);
         }
     }
 }

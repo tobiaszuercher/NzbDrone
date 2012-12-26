@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Ninject;
 using NzbDrone.Common;
+using NzbDrone.Core.Exceptions;
 using NzbDrone.Core.Model.Xem;
 
 namespace NzbDrone.Core.Providers
@@ -56,12 +57,50 @@ namespace NzbDrone.Core.Providers
             return result;
         }
 
+        public virtual List<XemAlternateName> GetAlternateNames(int id, string origin = "tvdb")
+        {
+            _logger.Trace("Fetching Alternate Names for: {0} from: {1}", id, origin);
+
+            var url = String.Format("{0}names?origin={1}&id={2}", XEM_BASE_URL, origin, id);
+            var response = _httpProvider.DownloadString(url);
+
+            CheckForFailureResult(response);
+
+            var alternateNames = new List<XemAlternateName>();
+
+            var result = JObject.Parse(response);
+            var data = result.GetValue("data");
+            var children = data.Children();
+
+            foreach(JProperty child in children)
+            {
+                int seasonNumber;
+                var season = child.Name;
+                if(!Int32.TryParse(season, out seasonNumber)) seasonNumber = -1;
+
+                var languages = JsonConvert.DeserializeObject<Dictionary<String, List<String>>>(child.Value.ToString());
+
+                foreach(var language in languages)
+                {
+                    if (!language.Key.Equals("us", StringComparison.InvariantCultureIgnoreCase))
+                        continue;
+
+                    foreach(var name in language.Value)
+                    {
+                        alternateNames.Add(new XemAlternateName{ SeasonNumber = seasonNumber, Name = name });
+                    }
+                }
+            }
+
+            return alternateNames;
+        }
+
         public virtual void CheckForFailureResult(string response)
         {
             var result = JsonConvert.DeserializeObject<XemResult<dynamic>>(response);
 
             if (result != null && result.Result.Equals("failure", StringComparison.InvariantCultureIgnoreCase))
-                throw new Exception("Error response received from Xem: " + result.Message);
+                throw new XemException("Error response received from Xem: " + result.Message);
         }
     }
 }

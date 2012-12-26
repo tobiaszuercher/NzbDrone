@@ -49,8 +49,11 @@ namespace NzbDrone.Core.Test.JobTests
             Mocker.GetMock<BannerDownloadJob>()
                 .Setup(j => j.Start(notification, It.Is<object>(d => d.GetPropertyValue<int>("SeriesId") > 0)));
 
-            Mocker.GetMock<XemUpdateJob>()
-                .Setup(j => j.Start(notification, It.Is<object>(d => d.GetPropertyValue<int>("SeriesId") > 0)));
+            Mocker.GetMock<XemProvider>()
+                .Setup(j => j.UpdateMappings(It.Is<Int32>(i => i > 0)));
+
+            Mocker.GetMock<XemProvider>()
+                  .Setup(j => j.UpdateAlternateNames(It.Is<Int32>(i => i > 0)));
 
             Mocker.GetMock<UpdateInfoJob>()
                 .Setup(j => j.Start(notification, It.Is<object>(d => d.GetPropertyValue<int>("SeriesId") == series[0].SeriesId)))
@@ -123,8 +126,11 @@ namespace NzbDrone.Core.Test.JobTests
             Mocker.GetMock<MediaFileProvider>()
                 .Setup(s => s.GetSeriesFiles(It.IsAny<int>())).Returns(new List<EpisodeFile>());
 
-            Mocker.GetMock<XemUpdateJob>()
-                .Setup(j => j.Start(notification, It.Is<object>(d => d.GetPropertyValue<int>("SeriesId") == series[0].SeriesId)));
+            Mocker.GetMock<XemProvider>()
+                .Setup(j => j.UpdateAlternateNames(series[0].SeriesId));
+
+            Mocker.GetMock<XemProvider>()
+                .Setup(j => j.UpdateMappings(series[0].SeriesId));
 
             //Act
             Mocker.Resolve<ImportNewSeriesJob>().Start(notification, null);

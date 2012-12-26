@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using NzbDrone.Services.Service.Providers;
 
@@ -44,7 +45,7 @@ namespace NzbDrone.Services.Service.Controllers
         [OutputCache(CacheProfile = "Cache1HourVaryBySeriesId")]
         public JsonResult AnidbId(int tvdbId)
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

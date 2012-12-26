@@ -1,0 +1,30 @@
+﻿{
+
+    "result": "success",
+    "data": {
+        "2": {
+            "us": [
+                "Black Lagoon: The Second Barrage"
+            ]
+        },
+        "3": {
+            "us": [
+                "Black Lagoon Roberta's Blood Trail",
+                "Black Lagoon: Robertas Blood Trail",
+                "Black Lagoon: Roberta's Blood Trail",
+                "Black Lagoon OVA - Roberta's Blood Trail"
+            ]
+        },
+        "all": {
+            "us": [
+                "Black-Lagoon"
+            ],
+            "jp": [
+                "ブラック・ラグーン",
+                "Burakku Ragūn"
+            ]
+        }
+    },
+    "message": ""
+
+}

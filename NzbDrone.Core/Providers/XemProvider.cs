@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using NLog;
 using Ninject;
+using NzbDrone.Core.Exceptions;
+using NzbDrone.Core.Model;
 using NzbDrone.Core.Repository;
 
 namespace NzbDrone.Core.Providers
@@ -13,16 +15,18 @@ namespace NzbDrone.Core.Providers
         private readonly SeriesProvider _seriesProvider;
         private readonly EpisodeProvider _episodeProvider;
         private readonly XemCommunicationProvider _xemCommunicationProvider;
+        private readonly SceneMappingProvider _sceneMappingProvider;
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [Inject]
         public XemProvider(SeriesProvider seriesProvider, EpisodeProvider episodeProvider,
-                            XemCommunicationProvider xemCommunicationProvider)
+                            XemCommunicationProvider xemCommunicationProvider, SceneMappingProvider sceneMappingProvider)
         {
             _seriesProvider = seriesProvider;
             _episodeProvider = episodeProvider;
             _xemCommunicationProvider = xemCommunicationProvider;
+            _sceneMappingProvider = sceneMappingProvider;
         }
 
         public XemProvider()
@@ -31,7 +35,7 @@ namespace NzbDrone.Core.Providers
 
         public virtual void UpdateMappings()
         {
-            _logger.Trace("Starting scene numbering update");
+            logger.Trace("Starting scene numbering update");
             try
             {
                 var ids = _xemCommunicationProvider.GetXemSeriesIds();
@@ -43,12 +47,12 @@ namespace NzbDrone.Core.Providers
                     PerformUpdate(ser);
                 }
 
-                _logger.Trace("Completed scene numbering update");
+                logger.Trace("Completed scene numbering update");
             }
 
             catch(Exception ex)
             {
-                _logger.WarnException("Error updating Scene Mappings", ex);
+                logger.WarnException("Error updating Scene Mappings", ex);
                 throw;
             }
         }
@@ -59,7 +63,7 @@ namespace NzbDrone.Core.Providers
 
             if (!xemIds.Contains(seriesId))
             {
-                _logger.Trace("Xem doesn't have a mapping for this series: {0}", seriesId);
+                logger.Trace("Xem doesn't have a mapping for this series: {0}", seriesId);
                 return;
             }
 
@@ -67,7 +71,7 @@ namespace NzbDrone.Core.Providers
 
             if (series == null)
             {
-                _logger.Trace("Series could not be found: {0}", seriesId);
+                logger.Trace("Series could not be found: {0}", seriesId);
                 return;
             }
 
@@ -76,7 +80,7 @@ namespace NzbDrone.Core.Providers
 
         public virtual void PerformUpdate(Series series)
         {
-            _logger.Trace("Updating scene numbering mapping for: {0}", series.Title);
+            logger.Trace("Updating scene numbering mapping for: {0}", series.Title);
             try
             {
                 var episodesToUpdate = new List<Episode>();
@@ -84,7 +88,7 @@ namespace NzbDrone.Core.Providers
 
                 if (mappings == null)
                 {
-                    _logger.Trace("Mappings for: {0} are null, skipping", series.Title);
+                    logger.Trace("Mappings for: {0} are null, skipping", series.Title);
                     return;
                 }
 
@@ -92,13 +96,13 @@ namespace NzbDrone.Core.Providers
 
                 foreach (var mapping in mappings)
                 {
-                    _logger.Trace("Setting scene numbering mappings for {0} S{1:00}E{2:00}", series.Title, mapping.Tvdb.Season, mapping.Tvdb.Episode);
+                    logger.Trace("Setting scene numbering mappings for {0} S{1:00}E{2:00}", series.Title, mapping.Tvdb.Season, mapping.Tvdb.Episode);
 
                     var episode = episodes.SingleOrDefault(e => e.SeasonNumber == mapping.Tvdb.Season && e.EpisodeNumber == mapping.Tvdb.Episode);
 
                     if (episode == null)
                     {
-                        _logger.Trace("Information hasn't been added to TheTVDB yet, skipping.");
+                        logger.Trace("Information hasn't been added to TheTVDB yet, skipping.");
                         continue;
                     }
 
@@ -108,17 +112,70 @@ namespace NzbDrone.Core.Providers
                     episodesToUpdate.Add(episode);
                 }
 
-                _logger.Trace("Committing scene numbering mappings to database for: {0}", series.Title);
+                logger.Trace("Committing scene numbering mappings to database for: {0}", series.Title);
                 _episodeProvider.UpdateEpisodes(episodesToUpdate);
 
-                _logger.Trace("Setting UseSceneMapping for {0}", series.Title);
+                logger.Trace("Setting UseSceneMapping for {0}", series.Title);
                 series.UseSceneNumbering = true;
                 _seriesProvider.UpdateSeries(series);
             }
 
             catch (Exception ex)
             {
-                _logger.WarnException("Error updating scene numbering mappings for: " + series, ex);
+                logger.WarnException("Error updating scene numbering mappings for: " + series, ex);
+            }
+        }
+
+        public virtual void UpdateAlternateNames()
+        {
+            logger.Trace("Updating alternate names for all series");
+
+            var ids = _xemCommunicationProvider.GetXemSeriesIds();
+            var series = _seriesProvider.GetAllSeries();
+            var wantedSeries = series.Where(s => ids.Contains(s.SeriesId)).ToList();
+
+            foreach (var ser in wantedSeries)
+            {
+                UpdateAlternateNames(ser.SeriesId);
+            }
+
+            logger.Trace("Completed alternate name update.");
+        }
+
+        public virtual void UpdateAlternateNames(int seriesId)
+        {
+            logger.Trace("Updating alternate names for: {0}", seriesId);
+
+            try
+            {
+                var alternateNames = _xemCommunicationProvider.GetAlternateNames(seriesId);
+
+                var mappings = new List<SceneMapping>();
+
+                foreach (var alternateName in alternateNames)
+                {
+                    mappings.Add(new SceneMapping
+                    {
+                        SeriesId = seriesId,
+                        SeasonNumber = alternateName.SeasonNumber,
+                        SceneName = alternateName.Name,
+                        CleanTitle = Parser.NormalizeTitle(alternateName.Name),
+                        Source = SceneMappingSourceType.Xem
+                    });
+                }
+
+                _sceneMappingProvider.DeleteMappings(seriesId, SceneMappingSourceType.Xem);
+                _sceneMappingProvider.InsertMappings(mappings);
+
+                logger.Trace("Finished updating alternate names for: {0}", seriesId);
+            }
+            catch (XemException ex)
+            {
+                logger.Error("Error received from Xem when updating alternate names for: {0}", seriesId);
+            }
+            catch(Exception ex)
+            {
+                logger.ErrorException("Error updating alternate names for: " + seriesId, ex);
             }
         }
     }

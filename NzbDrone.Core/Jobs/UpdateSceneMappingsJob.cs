@@ -8,10 +8,12 @@ namespace NzbDrone.Core.Jobs
     public class UpdateSceneMappingsJob : IJob
     {
         private readonly SceneMappingProvider _sceneNameMappingProvider;
+        private readonly XemProvider _xemProvider;
 
-        public UpdateSceneMappingsJob(SceneMappingProvider sceneNameMappingProvider)
+        public UpdateSceneMappingsJob(SceneMappingProvider sceneNameMappingProvider, XemProvider xemProvider)
         {
             _sceneNameMappingProvider = sceneNameMappingProvider;
+            _xemProvider = xemProvider;
         }
 
         public UpdateSceneMappingsJob()
@@ -32,6 +34,7 @@ namespace NzbDrone.Core.Jobs
         public virtual void Start(ProgressNotification notification, dynamic options)
         {
             _sceneNameMappingProvider.UpdateMappings();
+            _xemProvider.UpdateAlternateNames();
         }
     }
 }
