@@ -6,8 +6,8 @@ namespace NzbDrone.Core.Model
     public class QualityModel : IComparable<QualityModel>
     {
         public QualityTypes Quality { get; set; }
-
         public Boolean Proper { get; set; }
+        public ColourDepthType ColourDepth { get; set; }
 
         public QualityModel() { }
 

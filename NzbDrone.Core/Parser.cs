@@ -265,8 +265,9 @@ namespace NzbDrone.Core
             var result = new QualityModel { Quality = QualityTypes.Unknown };
             result.Proper = (normalizedName.Contains("proper") || normalizedName.Contains("repack"));
 
-            if(!result.Proper)
-                result.Proper = Regex.Match(name, @"\d{2,}v2").Success;
+            if(!result.Proper) result.Proper = Regex.Match(name, @"\d{2,}v2").Success;
+
+            result.ColourDepth = Regex.Match(name, @"10\W?bit").Success ? ColourDepthType.TenBit : ColourDepthType.EightBit;
 
             if (normalizedName.Contains("dvd") || normalizedName.Contains("bdrip") || normalizedName.Contains("brrip"))
             {

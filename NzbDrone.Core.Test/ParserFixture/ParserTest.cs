@@ -434,5 +434,23 @@ namespace NzbDrone.Core.Test.ParserFixture
             result.OriginalString.Should().Be(postTitle);
             result.SubGroup.Should().Be(subGroup);
         }
+
+        [TestCase("[Tsuki] Hunter X Hunter - 59 [10bit][1280x720][5D086896].mkv")]
+        [TestCase("[Tsuki] Hunter X Hunter - 59 [10-bit][1280x720][5D086896].mkv")]
+        [TestCase("[Tsuki] Hunter X Hunter - 59 [10 bit][1280x720][5D086896].mkv")]
+        public void parse_anime_10bit_colourDepth(string postTitle)
+        {
+            var result = Parser.ParseTitle(postTitle);
+            result.Quality.ColourDepth.Should().Be(ColourDepthType.TenBit);
+        }
+
+        [TestCase("[Tsuki] Hunter X Hunter - 59 [1280x720][5D086896].mkv")]
+        [TestCase("[Underwater]_Rinne_no_Lagrange_-_12_(720p)_[5C7BC4F9]")]
+        [TestCase("[Chihiro]_Working!!_-_06_[848x480_H.264_AAC][859EEAFA]")]
+        public void parse_anime_8bit_colourDepth(string postTitle)
+        {
+            var result = Parser.ParseTitle(postTitle);
+            result.Quality.ColourDepth.Should().Be(ColourDepthType.EightBit);
+        }
     }
 }
