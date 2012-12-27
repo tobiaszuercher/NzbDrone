@@ -69,7 +69,7 @@ namespace NzbDrone.Core
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled)
                                 };
 
-        private static readonly Regex NormalizeRegex = new Regex(@"((^|\W)(a|an|the|and|or|of)($|\W))|\W|_|(?:(?<=[^0-9]+)|\b)(?!(?:19\d{2}|20\d{2}))\d+(?=[^0-9ip]+|\b)",
+        private static readonly Regex NormalizeRegex = new Regex(@"((^|\W)(a|an|the|and|or|of)($|\W))|\W|_|(?:(?<=[^0-9]+)|\b)(?!(?:19\d{2}|20\d{2}))(?<!x|h)\d+(?=[^0-9ip]+|\b)",
                                                                  RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private static readonly Regex SimpleTitleRegex = new Regex(@"480[i|p]|720[i|p]|1080[i|p]|[x|h|x\s|h\s]264|DD\W?5\W1|\<|\>|\?|\*|\:|\||""",
@@ -265,6 +265,9 @@ namespace NzbDrone.Core
             var result = new QualityModel { Quality = QualityTypes.Unknown };
             result.Proper = (normalizedName.Contains("proper") || normalizedName.Contains("repack"));
 
+            if(!result.Proper)
+                result.Proper = Regex.Match(name, @"\d{2,}v2").Success;
+
             if (normalizedName.Contains("dvd") || normalizedName.Contains("bdrip") || normalizedName.Contains("brrip"))
             {
                 result.Quality = QualityTypes.DVD;
@@ -323,7 +326,20 @@ namespace NzbDrone.Core
                 result.Quality = QualityTypes.WEBDL480p;
                 return result;
             }
-            if (normalizedName.Contains("x264") || normalizedName.Contains("h264") || normalizedName.Contains("720p"))
+
+            if (normalizedName.Contains("bd720p") || normalizedName.Contains("bdh264720p") || normalizedName.Contains("bdx264720p"))
+            {
+                result.Quality = QualityTypes.Bluray720p;
+                return result;
+            }
+
+            if (name.Contains("1440x810") || name.Contains("1280x720"))
+            {
+                result.Quality = QualityTypes.HDTV;
+                return result;
+            }
+
+            if (normalizedName.Contains("720p"))
             {
                 result.Quality = QualityTypes.HDTV;
                 return result;

@@ -89,6 +89,24 @@ namespace NzbDrone.Core.Test.ParserFixture
             new object[] { QualityTypes.Bluray1080p }
         };
 
+        public static object[] AnimeQualityParserCases =
+        {
+            new object[] { "[Zorori-Project] Tetsunoshin - 26 [H264][46474F0A].avi", QualityTypes.SDTV, false },
+            new object[] { "[Zorori-Project] Gon - 16 [H264][1440x810][C27814A8].avi", QualityTypes.HDTV, false },
+            new object[] { "[yibis] One Piece 576 [480p][1BD9CF81].mp4", QualityTypes.SDTV, false },
+            new object[] { "[Commie] Ano Natsu de Matteru - NCOP [BD 720p AAC] [8110CADE].mkv", QualityTypes.Bluray720p, false },
+            new object[] { "[HorribleSubs] Naruto SD - Rock Lee no Seishun Full-Power Ninden - 39 [1080p].mkv", QualityTypes.HDTV, false }, //Todo: This should be HDTV 1080p
+            new object[] { "[Mezashite] Aikatsu! - 12 [720p][7842F590].mkv", QualityTypes.HDTV, false },
+            new object[] { "[Commie] Muv-Luv Alternative - Total Eclipse - 24 [2E4E4C2C].mkv", QualityTypes.HDTV, false },
+            new object[] { "[Meguca] Puella Magi Madoka Magica - 06 [BD][h264-720p AAC][7D4146A9].mkv", QualityTypes.Bluray720p, false },
+            new object[] { "[FFF] Dog Days S2 - 02 [BD][720p-AAC][D77BD419].mkv", QualityTypes.Bluray720p, false },
+            new object[] { "[DmonHiro] Jormungand 11 - [BD.720p][B872C2BC].mkv", QualityTypes.Bluray720p, false },
+            new object[] { "[Hatsuyuki] History's Strongest Disciple Kenichi OVA - 03 [DVD 848x480][D17A0C66].avi", QualityTypes.DVD, false },
+            new object[] { "[EveTaku] Sword Art Online - 22 (1280x720 x264-Hi10P AAC)[DDA6C43C].mkv", QualityTypes.HDTV, false },
+            new object[] { "[Hatsuyuki] Robotics Notes - 10 [848x480][71845F54].avi", QualityTypes.SDTV, false },
+            new object[] { "[AFFTW-Hatsuyuki] To Love-Ru Darkness - 10v2 [848x480][CF728264].avi", QualityTypes.SDTV, true },
+        };
+
         [Test, TestCaseSource("QualityParserCases")]
         public void quality_parse(string postTitle, QualityTypes quality, bool proper)
         {
@@ -103,6 +121,14 @@ namespace NzbDrone.Core.Test.ParserFixture
             var fileName = String.Format("My series S01E01 [{0}]", quality);
             var result = Parser.ParseQuality(fileName);
             result.Quality.Should().Be(quality);
+        }
+
+        [Test, TestCaseSource("AnimeQualityParserCases")]
+        public void anime_quality_parse(string postTitle, QualityTypes quality, bool proper)
+        {
+            var result = Parser.ParseQuality(postTitle);
+            result.Quality.Should().Be(quality);
+            result.Proper.Should().Be(proper);
         }
     }
 }

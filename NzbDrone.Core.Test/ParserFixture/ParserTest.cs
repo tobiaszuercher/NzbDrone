@@ -257,6 +257,14 @@ namespace NzbDrone.Core.Test.ParserFixture
 
         }
 
+        [TestCase("30 Rock x264 720p", "rockx264720p")]
+        [TestCase("30 Rock h264 720p", "rockh264720p")]
+        public void Normalize_Title_should_not_remove_codec_information(string dirty, string clean)
+        {
+            var result = Parser.NormalizeTitle(dirty);
+            result.Should().Be(clean);
+        }
+
         [TestCase("the")]
         [TestCase("and")]
         [TestCase("or")]
