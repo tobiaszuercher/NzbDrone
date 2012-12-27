@@ -5,8 +5,8 @@ using NzbDrone.Common;
 
 namespace NzbDrone.Core.Datastore.Migrations
 {
-    [Migration(20121226)]
-    public class Migration20121226 : NzbDroneMigration
+    [Migration(20121231)]
+    public class Migration20121231 : NzbDroneMigration
     {
         protected override void MainDbUpgrade()
         {
