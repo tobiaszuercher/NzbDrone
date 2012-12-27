@@ -60,8 +60,6 @@ namespace NzbDrone.Core.Repository
 
         public DateTime? FirstAired { get; set; }
 
-        public DateTime? FirstAired { get; set; }
-
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="Series"/> is hidden.
         /// </summary>
