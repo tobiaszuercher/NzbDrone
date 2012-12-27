@@ -274,6 +274,7 @@
     <Compile Include="Jobs\RefreshEpsiodeMetadata.cs" />
     <Compile Include="Jobs\PastWeekBacklogSearchJob.cs" />
     <Compile Include="Jobs\SearchHistoryCleanupJob.cs" />
+    <Compile Include="Model\ColourDepthType.cs" />
     <Compile Include="Model\HistoryQueryModel.cs" />
     <Compile Include="Model\DownloadClientType.cs" />
     <Compile Include="Instrumentation\LogDbContext.cs" />
