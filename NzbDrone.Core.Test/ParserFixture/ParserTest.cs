@@ -133,6 +133,7 @@ namespace NzbDrone.Core.Test.ParserFixture
 
         //[Timeout(1000)]
         [TestCase("WEEDS.S03E01-06.DUAL.BDRip.XviD.AC3.-HELLYWOOD", "WEEDS", 3, new[] { 1, 2, 3, 4, 5, 6 })]
+        [TestCase("WEEDS.S03E01-02.DUAL.BDRip.XviD.AC3.-HELLYWOOD", "WEEDS", 3, new[] { 1, 2 })]
         [TestCase("Two.and.a.Half.Men.103.104.720p.HDTV.X264-DIMENSION", "Two.and.a.Half.Men", 1, new[] { 3, 4 })]
         [TestCase("Weeds.S03E01.S03E02.720p.HDTV.X264-DIMENSION", "Weeds", 3, new[] { 1, 2 })]
         [TestCase("The Borgias S01e01 e02 ShoHD On Demand 1080i DD5 1 ALANiS", "The Borgias", 1, new[] { 1, 2 })]
@@ -416,20 +417,50 @@ namespace NzbDrone.Core.Test.ParserFixture
             ExceptionVerification.IgnoreWarns();
         }
 
-        [TestCase("[SubDESU]_High_School_DxD_07_(1280x720_x264-AAC)_[6B7FD717]", "High School DxD", 7, "SubDESU")]
-        [TestCase("[Chihiro]_Working!!_-_06_[848x480_H.264_AAC][859EEAFA]", "Working!!", 6, "Chihiro")]
-        [TestCase("[Commie]_Senki_Zesshou_Symphogear_-_11_[65F220B4]", "Senki_Zesshou_Symphogear", 11, "Commie")]
-        [TestCase("[Underwater]_Rinne_no_Lagrange_-_12_(720p)_[5C7BC4F9]", "Rinne_no_Lagrange", 12, "Underwater")]
-        [TestCase("[Commie]_Rinne_no_Lagrange_-_15_[E76552EA]", "Rinne_no_Lagrange", 15, "Commie")]
-        [TestCase("[HorribleSubs]_Hunter_X_Hunter_-_33_[720p]", "Hunter_X_Hunter", 33, "HorribleSubs")]
-        [TestCase("[HorribleSubs]_Fairy_Tail_-_145_[720p]", "Fairy_Tail", 145, "HorribleSubs")]
-        [TestCase("[HorribleSubs] Tonari no Kaibutsu-kun - 13 [1080p].mkv", "Tonari no Kaibutsu-kun", 13, "HorribleSubs")]
-        [TestCase("[Doremi].Yes.Pretty.Cure.5.Go.Go!.31.[1280x720].[C65D4B1F].mkv", "Yes.Pretty.Cure.5.Go.Go!", 31, "Doremi")]
-        public void parse_anime(string postTitle, string title, int absoluteEpisodeNumber, string subGroup)
+        [TestCase("[SubDESU]_High_School_DxD_07_(1280x720_x264-AAC)_[6B7FD717]", "High School DxD", 7, "SubDESU", 0, 0)]
+        [TestCase("[Chihiro]_Working!!_-_06_[848x480_H.264_AAC][859EEAFA]", "Working!!", 6, "Chihiro", 0, 0)]
+        [TestCase("[Commie]_Senki_Zesshou_Symphogear_-_11_[65F220B4]", "Senki_Zesshou_Symphogear", 11, "Commie", 0, 0)]
+        [TestCase("[Underwater]_Rinne_no_Lagrange_-_12_(720p)_[5C7BC4F9]", "Rinne_no_Lagrange", 12, "Underwater", 0, 0)]
+        [TestCase("[Commie]_Rinne_no_Lagrange_-_15_[E76552EA]", "Rinne_no_Lagrange", 15, "Commie", 0, 0)]
+        [TestCase("[HorribleSubs]_Hunter_X_Hunter_-_33_[720p]", "Hunter_X_Hunter", 33, "HorribleSubs", 0, 0)]
+        [TestCase("[HorribleSubs]_Fairy_Tail_-_145_[720p]", "Fairy_Tail", 145, "HorribleSubs", 0, 0)]
+        [TestCase("[HorribleSubs] Tonari no Kaibutsu-kun - 13 [1080p].mkv", "Tonari no Kaibutsu-kun", 13, "HorribleSubs", 0, 0)]
+        [TestCase("[Doremi].Yes.Pretty.Cure.5.Go.Go!.31.[1280x720].[C65D4B1F].mkv", "Yes.Pretty.Cure.5.Go.Go!", 31, "Doremi", 0, 0)]
+        [TestCase("[K-F] One Piece 214", "One Piece", 214, "K-F", 0, 0)]
+        [TestCase("[K-F] One Piece S10E14 214", "One Piece", 214, "K-F", 10, 14)]
+        [TestCase("[K-F] One Piece 10x14 214", "One Piece", 214, "K-F", 10, 14)]
+        [TestCase("[K-F] One Piece 214 10x14", "One Piece", 214, "K-F", 10, 14)]
+        [TestCase("One Piece S10E14 214", "One Piece", 214, "", 10, 14)]
+        [TestCase("One Piece 10x14 214", "One Piece", 214, "", 10, 14)]
+        [TestCase("One Piece 214 10x14", "One Piece", 214, "", 10, 14)]
+        [TestCase("214 One Piece 10x14", "One Piece", 214, "", 10, 14)]
+        public void parse_anime(string postTitle, string title, int absoluteEpisodeNumber, string subGroup, int seasonNumber, int episodeNumber)
         {
             var result = Parser.ParseTitle(postTitle);
             result.Should().NotBeNull();
-            result.AbsoluteEpisodeNumber.Should().Be(absoluteEpisodeNumber);
+            result.AbsoluteEpisodeNumbers.First().Should().Be(absoluteEpisodeNumber);
+            result.SeasonNumber.Should().Be(seasonNumber);
+            result.EpisodeNumbers.FirstOrDefault().Should().Be(episodeNumber);
+            result.CleanTitle.Should().Be(Parser.NormalizeTitle(title));
+            result.OriginalString.Should().Be(postTitle);
+            result.SubGroup.Should().Be(subGroup);
+        }
+
+        [TestCase("[K-F] One Piece 215-216", "One Piece", "K-F", new[] { 215, 216 }, 0, new int[]{})]
+        [TestCase("[K-F] One Piece S10E15-E16 215-216", "One Piece", "K-F", new[] { 215, 216 }, 10, new[] { 15, 16 })]
+        [TestCase("[K-F] One Piece 10x15-16 215-216", "One Piece", "K-F", new[] { 215, 216 }, 10, new[] { 15, 16 })]
+        [TestCase("[K-F] One Piece 215-216 10x15-16", "One Piece", "K-F", new[] { 215, 216 }, 10, new[] { 15, 16 })]
+        [TestCase("One Piece S10E15-E16 215-216", "One Piece", "", new[] { 215, 216 }, 10, new[] { 15, 16 })]
+        [TestCase("One Piece 10x15-16 215-216", "One Piece", "", new[] { 215, 216 }, 10, new[] { 15, 16 })]
+        [TestCase("One Piece 215-216 10x15-16", "One Piece", "", new[] { 215, 216 }, 10, new[] { 15, 16 })]
+        [TestCase("215-216 One Piece 10x15-16", "One Piece", "", new[] { 215, 216 }, 10, new[] { 15, 16 })]
+        public void parse_multi_episode_anime(string postTitle, string title, string subGroup, int[] absoluteEpisodeNumbers, int seasonNumber, int[] episodeNumbers)
+        {
+            var result = Parser.ParseTitle(postTitle);
+            result.Should().NotBeNull();
+            result.AbsoluteEpisodeNumbers.Should().Contain(absoluteEpisodeNumbers);
+            result.SeasonNumber.Should().Be(seasonNumber);
+            if (episodeNumbers.Any()) result.EpisodeNumbers.Should().Contain(episodeNumbers);
             result.CleanTitle.Should().Be(Parser.NormalizeTitle(title));
             result.OriginalString.Should().Be(postTitle);
             result.SubGroup.Should().Be(subGroup);

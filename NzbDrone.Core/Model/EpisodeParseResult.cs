@@ -51,7 +51,7 @@ namespace NzbDrone.Core.Model
 
         public IList<Episode> Episodes { get; set; }
 
-        public Int32 AbsoluteEpisodeNumber { get; set; }
+        public List<Int32> AbsoluteEpisodeNumbers { get; set; }
 
         public String SubGroup { get; set; }
 
