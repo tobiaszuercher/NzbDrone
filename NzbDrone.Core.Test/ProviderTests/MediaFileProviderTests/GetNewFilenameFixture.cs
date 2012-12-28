@@ -753,7 +753,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
         }
 
         [Test]
-        public void should_use_airDate_if_series_isDaily()
+        public void should_use_airDate_if_series_is_Daily()
         {
             var fakeConfig = Mocker.GetMock<ConfigProvider>();
             fakeConfig.SetupGet(c => c.SortingIncludeSeriesName).Returns(true);
@@ -782,7 +782,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
         }
 
         [Test]
-        public void should_use_airDate_if_series_isDaily_no_episode_title()
+        public void should_use_airDate_if_series_is_Daily_no_episode_title()
         {
             var fakeConfig = Mocker.GetMock<ConfigProvider>();
             fakeConfig.SetupGet(c => c.SortingIncludeSeriesName).Returns(true);

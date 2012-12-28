@@ -175,9 +175,9 @@ namespace NzbDrone.Core.Providers
                 result += series.Title + separatorStyle.Pattern;
             }
 
-            if(series.SeriesType == SeriesType.Standard)
+            if(series.SeriesType == SeriesType.Standard || series.SeriesType == SeriesType.Anime)
             {
-                result += numberStyle.Pattern.Replace("%0e",
+                var episodeResult = numberStyle.Pattern.Replace("%0e",
                                                       String.Format("{0:00}", sortedEpisodes.First().EpisodeNumber));
 
                 if(episodes.Count > 1)
@@ -189,16 +189,37 @@ namespace NzbDrone.Core.Providers
                     {
                         if(multiEpisodeStyle.Name == "Duplicate")
                         {
-                            result += separatorStyle.Pattern + numberStyle.Pattern;
+                            episodeResult += separatorStyle.Pattern + numberStyle.Pattern;
                         }
                         else
                         {
-                            result += multiEpisodeStyle.Pattern;
+                            episodeResult += multiEpisodeStyle.Pattern;
                         }
 
-                        result = result.Replace("%0e", String.Format("{0:00}", episode.EpisodeNumber));
+                        episodeResult = episodeResult.Replace("%0e", String.Format("{0:00}", episode.EpisodeNumber));
                         episodeNames.Add(Parser.CleanupEpisodeTitle(episode.Title));
                     }
+                }
+
+                if (series.SeriesType == SeriesType.Standard)
+                    result += episodeResult;
+
+                if (series.SeriesType == SeriesType.Anime)
+                {
+                    var animeNumberingStyle = EpisodeSortingHelper.GetAnimeNumberStyle(_configProvider.SortingAnimeNumberStyle);
+                    var animeMultiEpisodeStyle = EpisodeSortingHelper.GetAnimeMultiEpisodeStyle(_configProvider.SortingAnimeMultiEpisodeStyle);
+                    var animeDigitPadding = _configProvider.SortingAnimeNumberPadding == 3 ? "000" : "00";
+
+                    result += animeNumberingStyle.Pattern.Replace("%n", episodeResult);
+
+                    var animeResult = sortedEpisodes.First().AbsoluteEpisodeNumber.ToString(animeDigitPadding);
+
+                    foreach (var episode in sortedEpisodes.Skip(1))
+                    {
+                        animeResult += animeMultiEpisodeStyle.Pattern + episode.AbsoluteEpisodeNumber.ToString(animeDigitPadding);
+                    }
+
+                    result = result.Replace("%a", animeResult);
                 }
 
                 result = result
@@ -232,6 +253,12 @@ namespace NzbDrone.Core.Providers
 
                 if (proper)
                     result += " [Proper]";
+            }
+
+            if(series.SeriesType == SeriesType.Anime && _configProvider.SortingAnimeAppendSubGroup)
+            {
+                if (episodeFile != null && !String.IsNullOrWhiteSpace(episodeFile.SubGroup))
+                    result += String.Format(" [{0}]", episodeFile.SubGroup);
             }
 
             if (_configProvider.SortingReplaceSpaces)

@@ -199,6 +199,30 @@ namespace NzbDrone.Core.Providers.Core
             set { SetValue("Sorting_UseSceneName", value); }
         }
 
+        public virtual int SortingAnimeNumberStyle
+        {
+            get { return GetValueInt("Sorting_AnimeNumberStyle", 0); }
+            set { SetValue("Sorting_AnimeNumberStyle", value); }
+        }
+
+        public virtual bool SortingAnimeAppendSubGroup
+        {
+            get { return GetValueBoolean("Sorting_AnimeAppendSubGroup", true); }
+            set { SetValue("Sorting_AnimeAppendSubGroup", value); }
+        }
+
+        public virtual int SortingAnimeNumberPadding
+        {
+            get { return GetValueInt("Sorting_AnimeNumberPadding", 3); }
+            set { SetValue("Sorting_AnimeNumberPadding", value); }
+        }
+
+        public virtual int SortingAnimeMultiEpisodeStyle
+        {
+            get { return GetValueInt("Sorting_AnimeMultiEpisodeStyle", 0); }
+            set { SetValue("Sorting_AnimeMultiEpisodeStyle", value); }
+        }
+
         public virtual int DefaultQualityProfile
         {
             get { return GetValueInt("DefaultQualityProfile", 1); }
