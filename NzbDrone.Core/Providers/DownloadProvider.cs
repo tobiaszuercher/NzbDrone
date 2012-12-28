@@ -138,14 +138,23 @@ namespace NzbDrone.Core.Providers
             var epNumberString = String.Join("-", episodeString);
             string episodeName;
 
-
             if (episodeNames.Distinct().Count() == 1)
                 episodeName = episodeNames.First();
 
             else
                 episodeName = String.Join(" + ", episodeNames.Distinct());
 
-            var result = String.Format("{0} - {1} - {2} [{3}]", seriesTitle, epNumberString, episodeName, parseResult.Quality.Quality);
+            string result = "";
+
+            if (parseResult.Series.SeriesType == SeriesType.Anime)
+            {
+                var absNumberString = String.Join("-", parseResult.Episodes.Select(e => e.AbsoluteEpisodeNumber.ToString("000")));
+
+                result = String.Format("{0} - {1} - {2} - {3} [{4}]", seriesTitle, epNumberString, absNumberString, episodeName, parseResult.Quality.Quality);
+            }
+
+            else
+                result = String.Format("{0} - {1} - {2} [{3}]", seriesTitle, epNumberString, episodeName, parseResult.Quality.Quality);
 
             if (parseResult.Quality.Proper)
             {

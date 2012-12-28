@@ -46,9 +46,7 @@ namespace NzbDrone.Core.Providers.DecisionEngine
             maxSize = maxSize * series.Runtime;
 
             //Multiply maxSize by the number of episodes parsed (if EpisodeNumbers is null it will be treated as a single episode)
-            //TODO: is this check really necessary? shouldn't we blowup?
-            if (subject.EpisodeNumbers != null)
-                maxSize = maxSize * subject.EpisodeNumbers.Count;
+            maxSize = maxSize * subject.Episodes.Count;
 
             //Check if there was only one episode parsed
             //and it is the first or last episode of the season

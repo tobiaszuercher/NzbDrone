@@ -261,6 +261,59 @@ namespace NzbDrone.Core.Test.ProviderTests
             return Mocker.Resolve<DownloadProvider>().GetDownloadTitle(parsResult);
         }
 
+        [TestCase(true, Result = "My Series Name - 1x01 - 001 - My Episode Title [Bluray720p] [Proper]")]
+        [TestCase(false, Result = "My Series Name - 1x01 - 001 - My Episode Title [Bluray720p]")]
+        public string create_proper_sab_anime_titles(bool proper)
+        {
+            var series = Builder<Series>.CreateNew()
+                    .With(c => c.SeriesType = SeriesType.Daily)
+                    .With(c => c.Title = "My Series Name")
+                    .With(c => c.SeriesType = SeriesType.Anime)
+                    .Build();
+
+            var episode = Builder<Episode>.CreateNew()
+                    .With(e => e.Title = "My Episode Title")
+                    .Build();
+
+            var parsResult = new EpisodeParseResult
+            {
+                Quality = new QualityModel(QualityTypes.Bluray720p, proper),
+                Series = series,
+                EpisodeTitle = "My Episode Title",
+                Episodes = new List<Episode> { episode }
+            };
+
+            return Mocker.Resolve<DownloadProvider>().GetDownloadTitle(parsResult);
+        }
+
+        [Test]
+        public void create_proper_sab_anime_multiEpisode_titles()
+        {
+            var series = Builder<Series>.CreateNew()
+                    .With(c => c.SeriesType = SeriesType.Daily)
+                    .With(c => c.Title = "My Series Name")
+                    .With(c => c.SeriesType = SeriesType.Anime)
+                    .Build();
+
+            var episodes = Builder<Episode>.CreateListOfSize(2)
+                    .All()
+                    .With(e => e.Title = "My Episode Title")
+                    .With(e => e.SeasonNumber = 1)
+                    .Build();
+
+
+
+            var parsResult = new EpisodeParseResult
+            {
+                Quality = new QualityModel(QualityTypes.Bluray720p, false),
+                Series = series,
+                EpisodeTitle = "My Episode Title",
+                Episodes = episodes
+            };
+
+            Mocker.Resolve<DownloadProvider>().GetDownloadTitle(parsResult).Should().Be("My Series Name - 1x01-1x02 - 001-002 - My Episode Title [Bluray720p]");
+        }
+
         [Test]
         public void should_not_repeat_the_same_episode_title()
         {

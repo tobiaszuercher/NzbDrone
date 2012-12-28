@@ -16,7 +16,7 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
 {
     [TestFixture]
     // ReSharper disable InconsistentNaming
-    public class EpisodeProviderTest_GetEpisodesByParseResult : CoreTest
+    public class GetEpisodesByParseResultFixture : CoreTest
     {
         private EpisodeProvider episodeProvider;
 
@@ -26,6 +26,9 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
         private Episode fakeEpisode;
         private Episode fakeDailyEpisode;
         private Episode fakeEpisode2;
+
+        private Episode fakeAnimeEpisode;
+        private Episode fakeAnimeEpisode2;
 
         [SetUp]
         public void Setup()
@@ -52,6 +55,19 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
                      .With(e => e.SeriesId = fakeSeries.SeriesId)
                      .With(e => e.AirDate = DateTime.Now.Date)
                      .With(e => e.Title = "Daily Episode 1")
+                     .Build();
+
+            fakeAnimeEpisode = Builder<Episode>.CreateNew()
+                     .With(e => e.SeriesId = fakeSeries.SeriesId)
+                     .With(e => e.Title = "Episode (1)")
+                     .Build();
+
+            fakeAnimeEpisode2 = Builder<Episode>.CreateNew()
+                     .With(e => e.SeriesId = fakeSeries.SeriesId)
+                     .With(e => e.SeasonNumber = fakeEpisode.SeasonNumber)
+                     .With(e => e.EpisodeNumber = fakeEpisode.EpisodeNumber + 1)
+                     .With(e => e.AbsoluteEpisodeNumber = fakeAnimeEpisode.AbsoluteEpisodeNumber + 1)
+                     .With(e => e.Title = "Episode (2)")
                      .Build();
 
             WithRealDb();
@@ -137,9 +153,6 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
             parseResult.EpisodeTitle.Should().Be("Episode");
         }
 
-
-
-
         [Test]
         public void none_existing_multi_episode_should_not_return_or_add_anything()
         {
@@ -156,9 +169,8 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
             Db.Fetch<Episode>().Should().BeEmpty();
         }
 
-
         [Test]
-        public void GetEpisodeParseResult_should_return_empty_list_if_episode_list_is_null()
+        public void should_return_empty_list_if_episode_list_is_null()
         {
             //Act
             var episodes = episodeProvider.GetEpisodesByParseResult(new EpisodeParseResult());
@@ -168,7 +180,7 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
         }
 
         [Test]
-        public void GetEpisodeParseResult_should_return_empty_list_if_episode_list_is_empty()
+        public void should_return_empty_list_if_episode_list_is_empty()
         {
             //Act
             var episodes = episodeProvider.GetEpisodesByParseResult(new EpisodeParseResult { EpisodeNumbers = new List<int>() });
@@ -204,9 +216,8 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
             Db.Fetch<Episode>().Should().HaveCount(0);
         }
 
-
         [Test]
-        public void GetEpisodeParseResult_should_return_single_title_for_multiple_episodes()
+        public void should_return_single_title_for_multiple_episodes()
         {
             Db.Insert(fakeSeries);
             Db.Insert(fakeEpisode);
@@ -231,7 +242,7 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
         }
 
         [Test]
-        public void GetEpisodeParseResult_should_return_single_title_for_single_episode()
+        public void should_return_single_title_for_single_episode()
         {
             Db.Insert(fakeEpisode);
             Db.Insert(fakeSeries);
@@ -252,7 +263,7 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
         }
 
         [Test]
-        public void GetEpisodeParseResult_should_return_nothing_when_series_is_not_daily_but_parsed_daily()
+        public void should_return_nothing_when_series_is_not_daily_but_parsed_daily()
         {
             Db.Insert(fakeSeries);
 
@@ -266,6 +277,82 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
 
             ep.Should().BeEmpty();
             ExceptionVerification.ExpectedWarns(1);
+        }
+
+        [Test]
+        public void should_return_nothing_when_series_is_not_anime_but_parsed_anime()
+        {
+            Db.Insert(fakeSeries);
+
+            var parseResult = new EpisodeParseResult
+            {
+                Series = fakeSeries,
+                AbsoluteEpisodeNumbers =  new List<int>{ 215, 216 }
+            };
+
+            var ep = episodeProvider.GetEpisodesByParseResult(parseResult);
+
+            ep.Should().BeEmpty();
+            ExceptionVerification.ExpectedWarns(1);
+        }
+
+        [Test]
+        public void should_find_anime_episode_by_absolute_episode_number()
+        {
+            fakeSeries.SeriesType = SeriesType.Anime;
+            Db.Insert(fakeSeries);
+            Db.Insert(fakeAnimeEpisode);
+
+            var parseResult = new EpisodeParseResult
+            {
+                Series = fakeSeries,
+                AbsoluteEpisodeNumbers = new List<int> { fakeAnimeEpisode.AbsoluteEpisodeNumber }
+            };
+
+            var ep = episodeProvider.GetEpisodesByParseResult(parseResult);
+
+            ep.Should().HaveCount(1);
+
+            VerifyEpisode(ep[0], fakeAnimeEpisode);
+        }
+
+        [Test]
+        public void should_return_multi_anime_episodes_when_multiple_were_parsed()
+        {
+            fakeSeries.SeriesType = SeriesType.Anime;
+            Db.Insert(fakeSeries);
+            Db.Insert(fakeAnimeEpisode);
+            Db.Insert(fakeAnimeEpisode2);
+
+            var parseResult = new EpisodeParseResult
+            {
+                Series = fakeSeries,
+                AbsoluteEpisodeNumbers = new List<int> { fakeAnimeEpisode.AbsoluteEpisodeNumber, fakeAnimeEpisode2.AbsoluteEpisodeNumber }
+            };
+
+            var ep = episodeProvider.GetEpisodesByParseResult(parseResult);
+
+            ep.Should().HaveCount(2);
+
+            VerifyEpisode(ep[0], fakeAnimeEpisode);
+            VerifyEpisode(ep[1], fakeAnimeEpisode2);
+        }
+
+        [Test]
+        public void should_return_nothing_when_absoluteEpisode_doesnt_exist()
+        {
+            fakeSeries.SeriesType = SeriesType.Anime;
+            Db.Insert(fakeSeries);
+
+            var parseResult = new EpisodeParseResult
+            {
+                Series = fakeSeries,
+                AbsoluteEpisodeNumbers = new List<int> { fakeAnimeEpisode.AbsoluteEpisodeNumber }
+            };
+
+            var ep = episodeProvider.GetEpisodesByParseResult(parseResult);
+
+            ep.Should().BeEmpty();
         }
 
         private void VerifyEpisode(Episode actual, Episode excpected)

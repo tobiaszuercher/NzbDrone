@@ -35,6 +35,9 @@
     
     @Html.CheckBox("nzbxStatus", @Model.NzbxEnabled, new { @class = "indexerStatusButton" })
     <label for="nzbxStatus">nzbx</label>
+    
+    @Html.CheckBox("fanzubStatus", @Model.FanzubEnabled, new { @class = "indexerStatusButton" })
+    <label for="fanzubStatus">Fanzub</label>
 </div>
 <div id="stylized">
     @using (Html.BeginForm("SaveIndexers", "Settings", FormMethod.Post, new { id = "IndexersForm", name = "IndexersForm", @class = "settingsForm" }))
@@ -150,6 +153,14 @@
                 </label>
                 @Html.CheckBoxFor(m => m.NzbxEnabled, new { @class = "inputClass checkClass enabledCheck" })
             </div>
+            
+            <h3><a href="#">Fanzub</a></h3>
+            <div class="indexerPanel">
+                <label class="labelClass">
+                    Enable <span class="small">@Html.DescriptionFor(m => m.FanzubEnabled)</span>
+                </label>
+                @Html.CheckBoxFor(m => m.FanzubEnabled, new { @class = "inputClass checkClass enabledCheck" })
+            </div>
         </div>
         
         <div class="indexer-global-settings">
@@ -230,6 +241,9 @@
         
         if (id == 'NzbxEnabled')
             $('#nzbxStatus').prop('checked', checked);
+        
+        if (id == 'FanzubEnabled')
+            $('#fanzubStatus').prop('checked', checked);
 
         $('.indexerStatusButton').button("refresh");
         reValidate();
@@ -262,6 +276,9 @@
         
         if (id == 'nzbxStatus')
             $('#NzbxEnabled').prop('checked', checked);
+        
+        if (id == 'fanzubStatus')
+            $('#FanzubEnabled').prop('checked', checked);
 
         reValidate();
     });

@@ -36,6 +36,7 @@ namespace NzbDrone.Core.Test.ProviderTests.DecisionEngineTests
                                        Quality = new QualityModel(QualityTypes.SDTV, true),
                                        EpisodeNumbers = new List<int> { 3, 4 },
                                        SeasonNumber = 12,
+                                       Episodes = new List<Episode>{ new Episode(), new Episode() },
                                        AirDate = DateTime.Now.AddDays(-12).Date
                                    };
 
@@ -46,6 +47,7 @@ namespace NzbDrone.Core.Test.ProviderTests.DecisionEngineTests
                                         Quality = new QualityModel(QualityTypes.SDTV, true),
                                         EpisodeNumbers = new List<int> { 3 },
                                         SeasonNumber = 12,
+                                        Episodes = new List<Episode>{ new Episode() },
                                         AirDate = DateTime.Now.AddDays(-12).Date
                                     };
 

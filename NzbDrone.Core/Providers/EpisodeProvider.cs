@@ -86,6 +86,22 @@ namespace NzbDrone.Core.Providers
             return episode;
         }
 
+        public virtual Episode GetEpisode(int seriesId, int absoluteEpisodeNumber)
+        {
+            var episode = _database.Fetch<Episode, Series, EpisodeFile>(@"SELECT * FROM Episodes
+                                                            INNER JOIN Series ON Episodes.SeriesId = Series.SeriesId
+                                                            LEFT JOIN EpisodeFiles ON Episodes.EpisodeFileId = EpisodeFiles.EpisodeFileId
+                                                            WHERE Episodes.SeriesId = @0 AND AbsoluteEpisodeNumber = @1", seriesId, absoluteEpisodeNumber).SingleOrDefault();
+
+            if (episode == null)
+                return null;
+
+            if (episode.EpisodeFileId == 0)
+                episode.EpisodeFile = null;
+
+            return episode;
+        }
+
         public virtual IList<Episode> GetEpisodeBySeries(long seriesId)
         {
             var episodes = _database.Fetch<Episode, Series, EpisodeFile>(@"SELECT * FROM Episodes
@@ -180,6 +196,55 @@ namespace NzbDrone.Core.Providers
                 return result;
             }
 
+            if (parseResult.AbsoluteEpisodeNumbers != null && parseResult.AbsoluteEpisodeNumbers.Any())
+            {
+                if (parseResult.Series.SeriesType != SeriesType.Anime)
+                {
+                    //Todo: Collect this as a Series we want to treat as an anime series, or possible parsing error
+                    logger.Warn("Found anime-style episode for non-anime series: {0}. {1}", parseResult.Series.Title, parseResult.OriginalString);
+                    return new List<Episode>();
+                }
+
+                foreach(var absoluteEpisodeNumber in parseResult.AbsoluteEpisodeNumbers)
+                {
+                    Episode episodeInfo = null;
+
+                    if(parseResult.SceneSource && parseResult.Series.UseSceneNumbering)
+                    {
+                        episodeInfo = GetEpisodeBySceneNumbering(parseResult.Series.SeriesId, absoluteEpisodeNumber);
+
+                        if(episodeInfo != null)
+                        {
+                                logger.Info("Using Scene to TVDB Mapping for: {0} - Scene: {1:000} - TVDB: {2:000}",
+                                            parseResult.Series.Title,
+                                            episodeInfo.SceneAbsoluteEpisodeNumber,
+                                            episodeInfo.AbsoluteEpisodeNumber);
+                        }
+                    }
+
+                    if(episodeInfo == null)
+                    {
+                        episodeInfo = GetEpisode(parseResult.Series.SeriesId, absoluteEpisodeNumber);
+                    }
+
+                    if (episodeInfo != null)
+                    {
+                        result.Add(episodeInfo);
+
+                        if (parseResult.AbsoluteEpisodeNumbers.Count == 1)
+                        {
+                            parseResult.EpisodeTitle = episodeInfo.Title.Trim();
+                        }
+                        else
+                        {
+                            parseResult.EpisodeTitle = Parser.CleanupEpisodeTitle(episodeInfo.Title);
+                        }
+                    }
+                }
+
+                return result;
+            }
+
             if (parseResult.EpisodeNumbers == null)
                 return result;
 
@@ -190,16 +255,25 @@ namespace NzbDrone.Core.Providers
             {
                 Episode episodeInfo = null;
 
-                if (parseResult.SceneSource && parseResult.Series.UseSceneNumbering)
-                    episodeInfo = GetEpisodeBySceneNumbering(parseResult.Series.SeriesId, parseResult.SeasonNumber, episodeNumber);
+                if(parseResult.SceneSource && parseResult.Series.UseSceneNumbering)
+                {
+                    episodeInfo = GetEpisodeBySceneNumbering(parseResult.Series.SeriesId, parseResult.SeasonNumber,
+                                                             episodeNumber);
+
+                    if (episodeInfo != null)
+                    {
+                        logger.Info("Using Scene to TVDB Mapping for: {0} - Scene: {1}x{2:00} - TVDB: {3}x{4:00}",
+                                    parseResult.Series.Title,
+                                    episodeInfo.SceneSeasonNumber,
+                                    episodeInfo.SceneEpisodeNumber,
+                                    episodeInfo.SeasonNumber,
+                                    episodeInfo.EpisodeNumber);
+                    }
+                }
 
                 if (episodeInfo == null)
                 {
                     episodeInfo = GetEpisode(parseResult.Series.SeriesId, parseResult.SeasonNumber, episodeNumber);
-                    if (episodeInfo == null && parseResult.AirDate != null)
-                    {
-                        episodeInfo = GetEpisode(parseResult.Series.SeriesId, parseResult.AirDate.Value);
-                    }
                 }
                 
                 //if still null we should add the temp episode
@@ -225,16 +299,6 @@ namespace NzbDrone.Core.Providers
                 if (episodeInfo != null)
                 {
                     result.Add(episodeInfo);
-
-                    if (parseResult.Series.UseSceneNumbering)
-                    {
-                        logger.Info("Using Scene to TVDB Mapping for: {0} - Scene: {1}x{2:00} - TVDB: {3}x{4:00}",
-                                    parseResult.Series.Title,
-                                    episodeInfo.SceneSeasonNumber,
-                                    episodeInfo.SceneEpisodeNumber,
-                                    episodeInfo.SeasonNumber,
-                                    episodeInfo.EpisodeNumber);
-                    }
 
                     if (parseResult.EpisodeNumbers.Count == 1)
                     {
@@ -466,6 +530,22 @@ namespace NzbDrone.Core.Providers
                                                             INNER JOIN Series ON Episodes.SeriesId = Series.SeriesId
                                                             LEFT JOIN EpisodeFiles ON Episodes.EpisodeFileId = EpisodeFiles.EpisodeFileId
                                                             WHERE Episodes.SeriesId = @0 AND Episodes.SceneSeasonNumber = @1 AND Episodes.SceneEpisodeNumber = @2", seriesId, seasonNumber, episodeNumber).SingleOrDefault();
+
+            if (episode == null)
+                return null;
+
+            if (episode.EpisodeFileId == 0)
+                episode.EpisodeFile = null;
+
+            return episode;
+        }
+
+        public virtual Episode GetEpisodeBySceneNumbering(int seriesId, int absoluteEpisodeNumber)
+        {
+            var episode = _database.Fetch<Episode, Series, EpisodeFile>(@"SELECT * FROM Episodes 
+                                                            INNER JOIN Series ON Episodes.SeriesId = Series.SeriesId
+                                                            LEFT JOIN EpisodeFiles ON Episodes.EpisodeFileId = EpisodeFiles.EpisodeFileId
+                                                            WHERE Episodes.SeriesId = @0 AND Episodes.SceneAbsoluteEpisodeNumber = @1", seriesId, absoluteEpisodeNumber).SingleOrDefault();
 
             if (episode == null)
                 return null;

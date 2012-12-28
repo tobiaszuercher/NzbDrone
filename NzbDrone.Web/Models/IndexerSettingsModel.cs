@@ -83,6 +83,10 @@ namespace NzbDrone.Web.Models
         [Description("Enable downloading episodes from nzbx")]
         public bool NzbxEnabled { get; set; }
 
+        [DisplayName("Fanzub")]
+        [Description("Enable downloading episodes from Fanzub (Anime Only)")]
+        public bool FanzubEnabled { get; set; }
+
         [Required(ErrorMessage = "Please enter a valid number of days")]
         [DataType(DataType.Text)]
         [DisplayName("Retention")]
