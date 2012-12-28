@@ -434,6 +434,8 @@ namespace NzbDrone.Core.Test.ParserFixture
         [TestCase("One Piece 10x14 214", "One Piece", 214, "", 10, 14)]
         [TestCase("One Piece 214 10x14", "One Piece", 214, "", 10, 14)]
         [TestCase("214 One Piece 10x14", "One Piece", 214, "", 10, 14)]
+        [TestCase("Bleach - 031 - The Resolution to Kill [Lunar].avi", "Bleach", 31, "Lunar", 0, 0)]
+        [TestCase("Bleach - 031 - The Resolution to Kill [Lunar]", "Bleach", 31, "Lunar", 0, 0)]
         public void parse_anime(string postTitle, string title, int absoluteEpisodeNumber, string subGroup, int seasonNumber, int episodeNumber)
         {
             var result = Parser.ParseTitle(postTitle);
@@ -454,6 +456,8 @@ namespace NzbDrone.Core.Test.ParserFixture
         [TestCase("One Piece 10x15-16 215-216", "One Piece", "", new[] { 215, 216 }, 10, new[] { 15, 16 })]
         [TestCase("One Piece 215-216 10x15-16", "One Piece", "", new[] { 215, 216 }, 10, new[] { 15, 16 })]
         [TestCase("215-216 One Piece 10x15-16", "One Piece", "", new[] { 215, 216 }, 10, new[] { 15, 16 })]
+        [TestCase("Bleach - 031-032 - The Resolution to Kill [Lunar].avi", "Bleach", "Lunar", new[] { 31, 32 }, 0, new int[] {})]
+        [TestCase("Bleach - 031-032 - The Resolution to Kill [Lunar]", "Bleach", "Lunar", new[] { 31, 32 }, 0, new int[] {})]
         public void parse_multi_episode_anime(string postTitle, string title, string subGroup, int[] absoluteEpisodeNumbers, int seasonNumber, int[] episodeNumbers)
         {
             var result = Parser.ParseTitle(postTitle);
