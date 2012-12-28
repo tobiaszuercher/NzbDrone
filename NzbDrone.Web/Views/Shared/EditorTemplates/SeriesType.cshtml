@@ -1,0 +1,11 @@
+﻿@model SeriesType
+@using NzbDrone.Core.Model
+
+
+<select id="@ViewData.TemplateInfo.GetFullHtmlFieldId("")" name="@ViewData.TemplateInfo.GetFullHtmlFieldName("")" class="inputClass">
+    @foreach (int type in Enum.GetValues(typeof(SeriesType)))
+    {
+        var name = Enum.GetName(typeof(SeriesType), type);
+        <option value="@name" @((int)Model == type ? "selected=selected" : "")>@name</option>
+    }
+</select>

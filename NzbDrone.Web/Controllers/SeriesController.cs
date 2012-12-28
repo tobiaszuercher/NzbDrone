@@ -59,15 +59,6 @@ namespace NzbDrone.Web.Controllers
             var profiles = _qualityProvider.All();
             ViewData["SelectList"] = new SelectList(profiles, "QualityProfileId", "Name");
 
-            var backlogStatusTypes = new List<KeyValuePair<int, string>>();
-
-            foreach (BacklogSettingType backlogStatusType in Enum.GetValues(typeof(BacklogSettingType)))
-            {
-                backlogStatusTypes.Add(new KeyValuePair<int, string>((int)backlogStatusType, backlogStatusType.ToString()));
-            }
-
-            ViewData["BacklogSettingSelectList"] = new SelectList(backlogStatusTypes, "Key", "Value");
-
             var series = GetSeriesModels(new List<Series>{_seriesProvider.GetSeries(seriesId)}).Single();
             return View(series);
         }
@@ -80,7 +71,8 @@ namespace NzbDrone.Web.Controllers
             series.SeasonFolder = seriesModel.SeasonFolder;
             series.QualityProfileId = seriesModel.QualityProfileId;
             series.Path = seriesModel.Path;
-            series.BacklogSetting = (BacklogSettingType)seriesModel.BacklogSetting;
+            series.BacklogSetting = seriesModel.BacklogSetting;
+            series.SeriesType = seriesModel.SeriesType;
 
             if (!String.IsNullOrWhiteSpace(seriesModel.CustomStartDate))
                 series.CustomStartDate = DateTime.Parse(seriesModel.CustomStartDate, null, DateTimeStyles.RoundtripKind);
@@ -224,7 +216,7 @@ namespace NzbDrone.Web.Controllers
                                                         QualityProfileName = s.QualityProfile.Name,
                                                         Network = s.Network,
                                                         SeasonFolder = s.SeasonFolder,
-                                                        BacklogSetting = (int)s.BacklogSetting,
+                                                        BacklogSetting = s.BacklogSetting,
                                                         Status = s.Status,
                                                         SeasonsCount = s.SeasonCount,
                                                         EpisodeCount = s.EpisodeCount,
@@ -232,7 +224,8 @@ namespace NzbDrone.Web.Controllers
                                                         NextAiring = s.NextAiring == null ? String.Empty : s.NextAiring.Value.ToBestDateString(),
                                                         NextAiringSorter = s.NextAiring == null ? new DateTime(9999, 12, 31).ToString("o", CultureInfo.InvariantCulture) : s.NextAiring.Value.ToString("o", CultureInfo.InvariantCulture),
                                                         AirTime = s.AirTimes,
-                                                        CustomStartDate = s.CustomStartDate.HasValue ? s.CustomStartDate.Value.ToString("yyyy-MM-dd") : String.Empty
+                                                        CustomStartDate = s.CustomStartDate.HasValue ? s.CustomStartDate.Value.ToString("yyyy-MM-dd") : String.Empty,
+                                                        SeriesType = s.SeriesType
                                                     }).ToList();
 
             return series;

@@ -51,10 +51,14 @@ namespace NzbDrone.Web.Models
 
         [DisplayName("Backlog Setting")]
         [Description("Should NzbDrone search for missing episodes every 30 days?")]
-        public int BacklogSetting { get; set; }
+        public BacklogSettingType BacklogSetting { get; set; }
 
         [DisplayName("Custom Start Date")]
         [Description("Should NzbDrone only download episodes after your preferred start date?")]
         public string CustomStartDate { get; set; }
+
+        [DisplayName("Series Type")]
+        [Description("What type of series is this?")]
+        public SeriesType SeriesType { get; set; }
     }
 }
