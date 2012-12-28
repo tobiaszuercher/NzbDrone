@@ -36,6 +36,7 @@ namespace NzbDrone.Core.Repository
         public DateTime DateAdded { get; set; }
         public string SceneName { get; set; }
         public string ReleaseGroup { get; set; }
+        public string SubGroup { get; set; }
 
         [Ignore]
         public Model.QualityModel QualityWrapper

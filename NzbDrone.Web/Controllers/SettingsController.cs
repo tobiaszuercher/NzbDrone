@@ -78,9 +78,17 @@ namespace NzbDrone.Web.Controllers
             model.MultiEpisodeStyle = _configProvider.SortingMultiEpisodeStyle;
             model.SceneName = _configProvider.SortingUseSceneName;
 
+            //Anime
+            model.AnimeNumberStyle = _configProvider.SortingAnimeNumberStyle;
+            model.AnimeMultiEpisodeStyle = _configProvider.SortingAnimeMultiEpisodeStyle;
+            model.AnimeNumberPadding = _configProvider.SortingAnimeNumberPadding;
+            model.AnimeAppendSubGroup = _configProvider.SortingAnimeAppendSubGroup;
+
             model.SeparatorStyles = new SelectList(EpisodeSortingHelper.GetSeparatorStyles(), "Id", "Name");
             model.NumberStyles = new SelectList(EpisodeSortingHelper.GetNumberStyles(), "Id", "Name");
             model.MultiEpisodeStyles = new SelectList(EpisodeSortingHelper.GetMultiEpisodeStyles(), "Id", "Name");
+            model.AnimeNumberStyles = new SelectList(EpisodeSortingHelper.GetAnimeNumberStyles(), "Id", "Name");
+            model.AnimeMultiEpisodeStyles = new SelectList(EpisodeSortingHelper.GetAnimeMultiEpisodeStyles(), "Id", "Name");
 
             //Metadata
             model.MetadataXbmcEnabled = _metadataProvider.GetSettings(typeof(Core.Providers.Metadata.Xbmc)).Enable;
@@ -629,6 +637,12 @@ namespace NzbDrone.Web.Controllers
                 _configProvider.SortingNumberStyle = data.NumberStyle;
                 _configProvider.SortingMultiEpisodeStyle = data.MultiEpisodeStyle;
                 _configProvider.SortingUseSceneName = data.SceneName;
+
+                //Anime
+                _configProvider.SortingAnimeNumberStyle = data.AnimeNumberStyle;
+                _configProvider.SortingAnimeMultiEpisodeStyle = data.AnimeMultiEpisodeStyle;
+                _configProvider.SortingAnimeNumberPadding = data.AnimeNumberPadding;
+                _configProvider.SortingAnimeAppendSubGroup = data.AnimeAppendSubGroup;
 
                 //Metadata
                 _configProvider.MetadataUseBanners = data.MetadataUseBanners;

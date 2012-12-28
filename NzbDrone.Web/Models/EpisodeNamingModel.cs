@@ -47,6 +47,7 @@ namespace NzbDrone.Web.Models
         [Description("Use the scene name, ignoring all other naming settings?")]
         public bool SceneName { get; set; }
 
+        //Metadata
         [DisplayName("XBMC")]
         [Description("Enable creating metadata for XBMC")]
         public bool MetadataXbmcEnabled { get; set; }
@@ -55,8 +56,27 @@ namespace NzbDrone.Web.Models
         [Description("Use banners instead of posters?")]
         public bool MetadataUseBanners { get; set; }
 
+        //Anime
+        [DisplayName("Append Sub Group")]
+        [Description("Append Sub Group to end of filename (Anime only)?")]
+        public bool AnimeAppendSubGroup { get; set; }
+
+        [DisplayName("Anime Numbering Style")]
+        [Description("What anime number style would you prefer?")]
+        public int AnimeNumberStyle { get; set; }
+
+        [DisplayName("Anime Multi-Episode Separator")]
+        [Description("How do you want to separate multiple episode numbers?")]
+        public int AnimeMultiEpisodeStyle { get; set; }
+
+        [DisplayName("Anime Number Length")]
+        [Description("How many digits should absolute episode numbers be?")]
+        public int AnimeNumberPadding { get; set; }
+
         public SelectList SeparatorStyles { get; set; }
         public SelectList NumberStyles { get; set; }
         public SelectList MultiEpisodeStyles { get; set; }
+        public SelectList AnimeNumberStyles { get; set; }
+        public SelectList AnimeMultiEpisodeStyles { get; set; }
     }
 }

@@ -161,6 +161,7 @@ namespace NzbDrone.Core.Providers
             episodeFile.SeasonNumber = parseResult.SeasonNumber;
             episodeFile.SceneName = Path.GetFileNameWithoutExtension(filePath.NormalizePath());
             episodeFile.ReleaseGroup = parseResult.ReleaseGroup;
+            episodeFile.SubGroup = parseResult.SubGroup;
             var fileId = _mediaFileProvider.Add(episodeFile);
 
             //Link file to all episodes

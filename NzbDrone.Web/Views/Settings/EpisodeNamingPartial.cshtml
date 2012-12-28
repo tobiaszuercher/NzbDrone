@@ -46,12 +46,57 @@
         <span class="small">@Html.DescriptionFor(m => m.MultiEpisodeStyle)</span>
     </label>
     @Html.DropDownListFor(m => m.MultiEpisodeStyle, Model.MultiEpisodeStyles, new { @class = "inputClass selectClass" })
+    
+    @*Anime*@
+    <label class="labelClass">@Html.LabelFor(m => m.AnimeNumberStyle)
+        <span class="small">@Html.DescriptionFor(m => m.AnimeNumberStyle)</span>
+    </label>
+    @Html.DropDownListFor(m => m.AnimeNumberStyle, Model.AnimeNumberStyles, new { @class = "inputClass selectClass" })
+
+    <label class="labelClass">@Html.LabelFor(m => m.AnimeMultiEpisodeStyle)
+        <span class="small">@Html.DescriptionFor(m => m.AnimeMultiEpisodeStyle)</span>
+    </label>
+    @Html.DropDownListFor(m => m.AnimeMultiEpisodeStyle, Model.AnimeMultiEpisodeStyles, new { @class = "inputClass selectClass" })
+    
+    <label class="labelClass">@Html.LabelFor(m => m.AnimeNumberPadding)
+        <span class="small">@Html.DescriptionFor(m => m.AnimeNumberPadding)</span>
+    </label>
+    @Html.DropDownListFor(m => m.AnimeNumberPadding, new SelectList(
+                                                                        new List<dynamic>
+                                                                            {
+                                                                                    new { Id = 2, Text = "Two" },
+                                                                                    new { Id = 3, Text = "Three" }
+                                                                            }, "Id", "Text"), new { @class = "inputClass selectClass" })
+    
+    <label class="labelClass">@Html.LabelFor(m => m.AnimeAppendSubGroup)
+        <span class="small">@Html.DescriptionFor(m => m.AnimeAppendSubGroup)</span>
+    </label>
+    @Html.CheckBoxFor(m => m.AnimeAppendSubGroup, new { @class = "inputClass checkClass" })
 </div>
-<div id="examples">
+<fieldset id="examples">
+    <legend>Examples</legend>
     <div id="singleEpisodeExample">
-        <b>Single Episode Example: </b><span class="result"></span>
+        <b>Single Episode</b>
+        <span class="result"></span>
     </div>
+
     <div id="multiEpisodeExample">
-        <b>Multi-Episode Example: </b><span class="result"></span>
+        <b>Multi-Episode</b>
+        <span class="result"></span>
     </div>
-</div>
+
+    <div id="dailyEpisodeExample">
+        <b>Daily Episode</b>
+        <span class="result"></span>
+    </div>
+
+    <div id="animeSingleEpisodeExample">
+        <b>Anime Single Episode </b>
+        <span class="result"></span>
+    </div>
+
+    <div id="animeMultiEpisodeExample">
+        <b>Anime Multi-Episode</b>
+        <span class="result"></span>
+    </div>
+</fieldset>
