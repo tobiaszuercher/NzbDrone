@@ -88,7 +88,7 @@ namespace NzbDrone.Core.Test.ParserFixture
             result.OriginalString.Should().Be(postTitle);
 
             //Todo: Find a way to use this assertion as well (might be unpossible)
-            result.AbsoluteEpisodeNumbers.Should().BeEmpty();
+            //result.AbsoluteEpisodeNumbers.Should().BeEmpty();
         }
 
         [Test]
