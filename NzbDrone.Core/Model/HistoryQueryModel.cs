@@ -21,7 +21,10 @@ namespace NzbDrone.Core.Model
         public string EpisodeTitle { get; set; }
         public int SeasonNumber { get; set; }
         public int EpisodeNumber { get; set; }
+        public int AbsoluteEpisodeNumber { get; set; }
+        public DateTime AirDate { get; set; }
         public string EpisodeOverview { get; set; }
         public string SeriesTitle { get; set; }public int Id { get; set; }
+        public SeriesType SeriesType { get; set; }
     }
 }

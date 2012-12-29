@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 using DataTables.Mvc.Core.Models;
 using NzbDrone.Core.Helpers;
 using NzbDrone.Core.Jobs;
+using NzbDrone.Core.Model;
 using NzbDrone.Core.Providers;
 using NzbDrone.Core.Providers.Core;
 using NzbDrone.Web.Models;
@@ -42,7 +43,7 @@ namespace NzbDrone.Web.Controllers
             {
                 HistoryId = h.HistoryId,
                 SeriesId = h.SeriesId,
-                EpisodeNumbering = string.Format("{0}x{1:00}", h.SeasonNumber, h.EpisodeNumber),
+                EpisodeNumbering = GetEpisodeNumbering(h),
                 EpisodeTitle = h.EpisodeTitle,
                 EpisodeOverview = h.EpisodeOverview,
                 SeriesTitle = h.SeriesTitle,
@@ -99,6 +100,19 @@ namespace NzbDrone.Web.Controllers
             _jobProvider.QueueJob(typeof(EpisodeSearchJob), new { EpisodeId = episodeId });
 
             return JsonNotificationResult.Queued("Episode search");
+        }
+
+        public string GetEpisodeNumbering(HistoryQueryModel history)
+        {
+            var result = String.Format("{0}x{1:00}", history.SeasonNumber, history.EpisodeNumber);
+
+            if(history.SeriesType == SeriesType.Anime)
+                result += String.Format(" ({0:000})", history.AbsoluteEpisodeNumber);
+
+            if (history.SeriesType == SeriesType.Daily)
+                result += String.Format(" ({0:yyyy-MM-dd})", history.AirDate);
+
+            return result;
         }
     }
 }

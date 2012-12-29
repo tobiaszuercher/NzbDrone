@@ -76,6 +76,7 @@ namespace NzbDrone.Core.Test.ParserFixture
         [TestCase("Cheers S08E20 50-50 Carla [DVD]", "Cheers", 8, 20)]
         [TestCase("S02E10 6-50 to SLC [SDTV]", "", 2, 10)]
         [TestCase("Franklin & Bash S02E10 6-50 to SLC [SDTV]", "Franklin & Bash", 2, 10)]
+        [TestCase("30.Rock.S07E08.HDTV.x264-LOL", "30 Rock", 7, 8)]
         public void ParseTitle_single(string postTitle, string title, int seasonNumber, int episodeNumber)
         {
             var result = Parser.ParseTitle(postTitle);
@@ -85,6 +86,9 @@ namespace NzbDrone.Core.Test.ParserFixture
             result.EpisodeNumbers.First().Should().Be(episodeNumber);
             result.CleanTitle.Should().Be(Parser.NormalizeTitle(title));
             result.OriginalString.Should().Be(postTitle);
+
+            //Todo: Find a way to use this assertion as well (might be unpossible)
+            result.AbsoluteEpisodeNumbers.Should().BeEmpty();
         }
 
         [Test]

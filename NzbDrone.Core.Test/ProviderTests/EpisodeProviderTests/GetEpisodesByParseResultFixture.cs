@@ -355,6 +355,28 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
             ep.Should().BeEmpty();
         }
 
+        [Test]
+        public void should_try_standard_if_absNumber_found_but_is_not_anime_series()
+        {
+            Db.Insert(fakeSeries);
+            Db.Insert(fakeEpisode);
+
+            var parseResult = new EpisodeParseResult
+            {
+                Series = fakeSeries,
+                AbsoluteEpisodeNumbers = new List<int> { fakeAnimeEpisode.AbsoluteEpisodeNumber },
+                EpisodeNumbers = new List<int> { fakeEpisode.EpisodeNumber },
+                SeasonNumber = fakeEpisode.SeasonNumber
+            };
+
+            var ep = episodeProvider.GetEpisodesByParseResult(parseResult);
+
+            ep.Should().HaveCount(1);
+
+            VerifyEpisode(ep[0], fakeEpisode);
+            ExceptionVerification.ExpectedWarns(1);
+        }
+
         private void VerifyEpisode(Episode actual, Episode excpected)
         {
             actual.ShouldHave().AllProperties().But(e => e.Series).But(e => e.EpisodeFile).EqualTo(excpected);

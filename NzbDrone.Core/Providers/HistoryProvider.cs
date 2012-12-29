@@ -83,8 +83,9 @@ namespace NzbDrone.Core.Providers
         public virtual Page<HistoryQueryModel> GetPagedItems(DataTablesPageRequest pageRequest)
         {
             var query = Sql.Builder
-                    .Select(@"History.*, Series.Title as SeriesTitle, Episodes.Title as EpisodeTitle, 
+                    .Select(@"History.*, Series.Title as SeriesTitle, Series.SeriesType as SeriesType, Episodes.Title as EpisodeTitle, 
                                 Episodes.SeasonNumber as SeasonNumber, Episodes.EpisodeNumber as EpisodeNumber,
+                                Episodes.AbsoluteEpisodeNumber as AbsoluteEpisodeNumber, Episodes.AirDate as AirDate,
                                 Episodes.Overview as EpisodeOverview")
                     .From("History")
                     .InnerJoin("Series")

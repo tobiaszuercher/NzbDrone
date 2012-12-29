@@ -196,15 +196,14 @@ namespace NzbDrone.Core.Providers
                 return result;
             }
 
-            if (parseResult.AbsoluteEpisodeNumbers != null && parseResult.AbsoluteEpisodeNumbers.Any())
+            if (parseResult.AbsoluteEpisodeNumbers != null && parseResult.AbsoluteEpisodeNumbers.Any() && parseResult.Series.SeriesType != SeriesType.Anime)
             {
-                if (parseResult.Series.SeriesType != SeriesType.Anime)
-                {
-                    //Todo: Collect this as a Series we want to treat as an anime series, or possible parsing error
-                    logger.Warn("Found anime-style episode for non-anime series: {0}. {1}", parseResult.Series.Title, parseResult.OriginalString);
-                    return new List<Episode>();
-                }
+                //Todo: Collect this as a Series we want to treat as an anime series, or possible parsing error
+                logger.Warn("Found anime-style episode for non-anime series: {0}. {1}", parseResult.Series.Title, parseResult.OriginalString);
+            }
 
+            if (parseResult.AbsoluteEpisodeNumbers != null && parseResult.AbsoluteEpisodeNumbers.Any() && parseResult.Series.SeriesType == SeriesType.Anime)
+            {
                 foreach(var absoluteEpisodeNumber in parseResult.AbsoluteEpisodeNumbers)
                 {
                     Episode episodeInfo = null;
