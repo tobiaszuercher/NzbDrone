@@ -60,7 +60,11 @@ namespace NzbDrone.Core.Model
 
             string episodeString = "[Unknown Episode]";
 
-            if (AirDate != null && EpisodeNumbers == null)
+            if(AbsoluteEpisodeNumbers != null && AbsoluteEpisodeNumbers.Any())
+            {
+                episodeString = String.Join("-", AbsoluteEpisodeNumbers.Select(c => c.ToString("00"))) + " -";
+            }
+            else if (AirDate != null && EpisodeNumbers == null)
             {
                 episodeString = string.Format("{0}", AirDate.Value.ToString("yyyy-MM-dd"));
             }

@@ -85,7 +85,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_higher_quality_should_be_called_first()
+        public void higher_quality_should_be_called_first()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
                 .All()
@@ -119,7 +119,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_newer_report_should_be_called_first()
+        public void newer_report_should_be_called_first()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
                 .All()
@@ -151,7 +151,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_when_quality_is_not_needed_should_check_the_rest()
+        public void when_quality_is_not_needed_should_check_the_rest()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
                 .All()
@@ -177,7 +177,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_should_skip_if_series_is_null()
+        public void should_skip_if_series_is_null()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
                 .All()
@@ -200,7 +200,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_should_skip_if_series_is_mismatched()
+        public void should_skip_if_series_is_mismatched()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
                 .All()
@@ -223,7 +223,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_should_skip_if_season_doesnt_match()
+        public void should_skip_if_season_doesnt_match()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
                 .All()
@@ -246,7 +246,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_should_skip_if_episodeNumber_doesnt_match()
+        public void should_skip_if_episodeNumber_doesnt_match()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
                 .All()
@@ -269,7 +269,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_should_skip_if_any_episodeNumber_was_already_added_to_download_queue()
+        public void should_skip_if_any_episodeNumber_was_already_added_to_download_queue()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(2)
                 .All()
@@ -285,7 +285,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
             WithSuccessfulDownload();
 
             //Act
-            var result = Mocker.Resolve<SearchProvider>().ProcessSearchResults(new ProgressNotification("Test"), parseResults, new SearchHistory(), _matchingSeries, 1);
+            var result = Mocker.Resolve<SearchProvider>().ProcessSearchResults(new ProgressNotification("Test"), parseResults, new SearchHistory(), _matchingSeries, 1, null);
 
             //Assert
             result.Should().HaveCount(parseResults.Count);
@@ -296,7 +296,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_should_try_next_if_download_fails()
+        public void should_try_next_if_download_fails()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(2)
                 .All()
@@ -319,7 +319,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
                 .Returns(true);
 
             //Act
-            var result = Mocker.Resolve<SearchProvider>().ProcessSearchResults(new ProgressNotification("Test"), parseResults, new SearchHistory(), _matchingSeries, 1);
+            var result = Mocker.Resolve<SearchProvider>().ProcessSearchResults(new ProgressNotification("Test"), parseResults, new SearchHistory(), _matchingSeries, 1, null);
 
             //Assert
             result.Should().HaveCount(parseResults.Count);
@@ -330,7 +330,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
         }
 
         [Test]
-        public void processSearchResults_Successes_should_not_be_null_or_empty()
+        public void Successes_should_not_be_null_or_empty()
         {
             var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
                 .All()
@@ -361,6 +361,57 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchProviderTests
 
             Mocker.GetMock<AllowedDownloadSpecification>().Verify(c => c.IsSatisfiedBy(It.IsAny<EpisodeParseResult>()),
                                                        Times.Once());
+            Mocker.GetMock<DownloadProvider>().Verify(c => c.DownloadReport(It.IsAny<EpisodeParseResult>()),
+                                                      Times.Once());
+        }
+
+        [Test]
+        public void should_skip_if_absoluteEpisodeNumber_doesnt_match()
+        {
+            _matchingSeries.SeriesType = SeriesType.Anime;
+
+            var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
+                .All()
+                .With(e => e.SeasonNumber = 1)
+                .With(e => e.AbsoluteEpisodeNumbers = new List<int> { 2 })
+                .With(e => e.Quality = new QualityModel(QualityTypes.HDTV720p, false))
+                .Build();
+
+            WithMatchingSeries();
+
+            //Act
+            var result = Mocker.Resolve<SearchProvider>().ProcessSearchResults(new ProgressNotification("Test"), parseResults, new SearchHistory(), _matchingSeries, 1);
+
+            //Assert
+            result.Should().HaveCount(parseResults.Count);
+            result.Should().NotContain(s => s.Success);
+
+            Mocker.GetMock<DownloadProvider>().Verify(c => c.DownloadReport(It.IsAny<EpisodeParseResult>()),
+                                                      Times.Never());
+        }
+
+        [Test]
+        public void should_skip_if_absoluteEpisodeNumber_in_successes()
+        {
+            _matchingSeries.SeriesType = SeriesType.Anime;
+
+            var parseResults = Builder<EpisodeParseResult>.CreateListOfSize(5)
+                .All()
+                .With(e => e.SeasonNumber = 1)
+                .With(e => e.AbsoluteEpisodeNumbers = new List<int> { 1 })
+                .With(e => e.Quality = new QualityModel(QualityTypes.HDTV720p, false))
+                .Build();
+
+            WithMatchingSeries();
+            WithSuccessfulDownload();
+
+            //Act
+            var result = Mocker.Resolve<SearchProvider>().ProcessSearchResults(new ProgressNotification("Test"), parseResults, new SearchHistory(), _matchingSeries, 1);
+
+            //Assert
+            result.Should().HaveCount(parseResults.Count);
+            result.Where(s => s.Success).Should().HaveCount(1);
+
             Mocker.GetMock<DownloadProvider>().Verify(c => c.DownloadReport(It.IsAny<EpisodeParseResult>()),
                                                       Times.Once());
         }

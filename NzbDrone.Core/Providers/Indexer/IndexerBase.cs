@@ -65,6 +65,7 @@ namespace NzbDrone.Core.Providers.Indexer
         protected abstract IList<String> GetDailyEpisodeSearchUrls(string seriesTitle, DateTime date);
         protected abstract IList<String> GetSeasonSearchUrls(string seriesTitle, int seasonNumber);
         protected abstract IList<String> GetPartialSeasonSearchUrls(string seriesTitle, int seasonNumber, int episodeWildcard);
+        protected abstract IList<String> GetAnimeSearchUrls(string seriesTitle, int absoluteEpisodeNumber);
 
         /// <summary>
         /// This method can be overwritten to provide indexer specific info parsing
@@ -166,6 +167,17 @@ namespace NzbDrone.Core.Providers.Indexer
             _logger.Info("Finished searching {0} for {1}-{2}, Found {3}", Name, seriesTitle, airDate.ToShortDateString(), result.Count);
             return result;
 
+        }
+
+        public virtual IList<EpisodeParseResult> FetchAnime(string seriesTitle, int absoluteEpisodeNumber)
+        {
+            _logger.Debug("Searching {0} for {1} {2:00}", Name, seriesTitle, absoluteEpisodeNumber);
+
+            var searchUrls = GetAnimeSearchUrls(GetQueryTitle(seriesTitle), absoluteEpisodeNumber);
+            var result = Fetch(searchUrls);
+
+            _logger.Info("Finished searching {0} for {1} {2:00}, Found {3}", Name, seriesTitle, absoluteEpisodeNumber, result.Count);
+            return result;
         }
 
         protected virtual List<EpisodeParseResult> Fetch(IEnumerable<string> urls)

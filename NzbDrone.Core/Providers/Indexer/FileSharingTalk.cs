@@ -56,6 +56,11 @@ namespace NzbDrone.Core.Providers.Indexer
             return new List<string>();
         }
 
+        protected override IList<string> GetAnimeSearchUrls(string seriesTitle, int absoluteEpisodeNumber)
+        {
+            return new List<string>();
+        }
+
         public override string Name
         {
             get { return "FileSharingTalk"; }

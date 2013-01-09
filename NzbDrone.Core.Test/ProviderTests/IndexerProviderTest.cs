@@ -136,6 +136,11 @@ namespace NzbDrone.Core.Test.ProviderTests
             throw new NotImplementedException();
         }
 
+        protected override IList<string> GetAnimeSearchUrls(string seriesTitle, int absoluteEpisodeNumber)
+        {
+            throw new NotImplementedException();
+        }
+
         public override string Name
         {
             get { return "Mocked Indexer"; }
@@ -194,6 +199,11 @@ namespace NzbDrone.Core.Test.ProviderTests
             throw new NotImplementedException();
         }
 
+        protected override IList<string> GetAnimeSearchUrls(string seriesTitle, int absoluteEpisodeNumber)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override string NzbDownloadUrl(SyndicationItem item)
         {
             return "http://google.com";
@@ -243,6 +253,11 @@ namespace NzbDrone.Core.Test.ProviderTests
         }
 
         protected override IList<string> GetPartialSeasonSearchUrls(string seriesTitle, int seasonNumber, int episodeWildcard)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IList<string> GetAnimeSearchUrls(string seriesTitle, int absoluteEpisodeNumber)
         {
             throw new NotImplementedException();
         }
@@ -307,6 +322,11 @@ namespace NzbDrone.Core.Test.ProviderTests
             throw new NotImplementedException();
         }
 
+        protected override IList<string> GetAnimeSearchUrls(string seriesTitle, int absoluteEpisodeNumber)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override string NzbDownloadUrl(SyndicationItem item)
         {
             throw new NotImplementedException();
@@ -356,6 +376,11 @@ namespace NzbDrone.Core.Test.ProviderTests
         }
 
         protected override IList<string> GetPartialSeasonSearchUrls(string seriesTitle, int seasonNumber, int episodeWildcard)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IList<string> GetAnimeSearchUrls(string seriesTitle, int absoluteEpisodeNumber)
         {
             throw new NotImplementedException();
         }

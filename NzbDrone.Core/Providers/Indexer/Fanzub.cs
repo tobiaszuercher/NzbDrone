@@ -69,6 +69,18 @@ namespace NzbDrone.Core.Providers.Indexer
             return new List<string>();
         }
 
+        protected override IList<string> GetAnimeSearchUrls(string seriesTitle, int absoluteEpisodeNumber)
+        {
+            var searchUrls = new List<String>();
+
+            foreach (var url in Urls)
+            {
+                searchUrls.Add(String.Format("{0}&q={1}+{2:00}", url, seriesTitle, absoluteEpisodeNumber));
+            }
+
+            return searchUrls;
+        }
+
         protected override EpisodeParseResult CustomParser(SyndicationItem item, EpisodeParseResult currentResult)
         {
             if (currentResult != null)
