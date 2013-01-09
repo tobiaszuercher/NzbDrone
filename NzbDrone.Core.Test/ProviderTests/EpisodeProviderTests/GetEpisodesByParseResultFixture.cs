@@ -377,6 +377,32 @@ namespace NzbDrone.Core.Test.ProviderTests.EpisodeProviderTests
             ExceptionVerification.ExpectedWarns(1);
         }
 
+        [Test]
+        public void should_find_anime_episode_by_season_and_episode_numbers_when_for_specific_season()
+        {
+            fakeSeries.SeriesType = SeriesType.Anime;
+            fakeAnimeEpisode.SeasonNumber = 2;
+            fakeAnimeEpisode.EpisodeNumber = 1;
+
+            Db.Insert(fakeSeries);
+            Db.Insert(fakeAnimeEpisode);
+
+            var parseResult = new EpisodeParseResult
+            {
+                Series = fakeSeries,
+                AbsoluteEpisodeNumbers = new List<int> { fakeAnimeEpisode.AbsoluteEpisodeNumber },
+                SeriesTitle = fakeSeries.Title
+            };
+
+            fakeSeries.SceneMappings.Add(new SceneMapping{ CleanTitle = parseResult.CleanTitle, SeasonNumber = 2 });
+
+            var ep = episodeProvider.GetEpisodesByParseResult(parseResult);
+
+            ep.Should().HaveCount(1);
+
+            VerifyEpisode(ep[0], fakeAnimeEpisode);
+        }
+
         private void VerifyEpisode(Episode actual, Episode excpected)
         {
             actual.ShouldHave().AllProperties().But(e => e.Series).But(e => e.EpisodeFile).EqualTo(excpected);

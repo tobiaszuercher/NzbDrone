@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using NzbDrone.Core.Model;
 using NzbDrone.Core.Repository.Quality;
@@ -9,6 +10,11 @@ namespace NzbDrone.Core.Repository
     [PrimaryKey("SeriesId", autoIncrement = false)]
     public class Series
     {
+        public Series()
+        {
+            SceneMappings = new List<SceneMapping>();
+        }
+
         public virtual int SeriesId { get; set; }
 
         public string Title { get; set; }
@@ -83,5 +89,8 @@ namespace NzbDrone.Core.Repository
 
         [ResultColumn]
         public DateTime? NextAiring { get; set; }
+
+        [ResultColumn]
+        public List<SceneMapping> SceneMappings { get; set; }
     }
 }

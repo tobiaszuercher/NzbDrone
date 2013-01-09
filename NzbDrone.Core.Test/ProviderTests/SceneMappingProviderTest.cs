@@ -200,10 +200,10 @@ namespace NzbDrone.Core.Test.ProviderTests
             emptyDatabase.Insert(fakeMap);
 
             //Act
-            var seriesId = Mocker.Resolve<SceneMappingProvider>().GetSeriesId(fakeMap.CleanTitle);
+            var map = Mocker.Resolve<SceneMappingProvider>().GetSeriesId(fakeMap.CleanTitle);
 
             //Assert
-            Assert.AreEqual(fakeMap.SeriesId, seriesId);
+            map.SeriesId.Should().Be(fakeMap.SeriesId);
         }
 
         [Test]

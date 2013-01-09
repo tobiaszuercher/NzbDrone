@@ -79,7 +79,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - S01E05 - 005 - The Race [HDTV]");
+            result.Should().Be("Initial D - S01E05 - 005 - The Race [HDTV-720p]");
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV]");
+            result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV-720p]");
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - 05 - The Race [HDTV]");
+            result.Should().Be("Initial D - 05 - The Race [HDTV-720p]");
         }
 
         [Test]
@@ -112,7 +112,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - 05 - S01E05 - The Race [HDTV]");
+            result.Should().Be("Initial D - 05 - S01E05 - The Race [HDTV-720p]");
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile { SubGroup = "Lunar" });
-            result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV] [Lunar]");
+            result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV-720p] [Lunar]");
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile { SubGroup = null });
-            result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV]");
+            result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV-720p]");
         }
 
         [Test]
@@ -148,7 +148,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile { SubGroup = "" });
-            result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV]");
+            result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV-720p]");
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - S01E05-06 - 05 - 06 - The Race + The End [HDTV]");
+            result.Should().Be("Initial D - S01E05-06 - 05 - 06 - The Race + The End [HDTV-720p]");
         }
 
         [Test]
@@ -172,7 +172,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - 05 - 06 - The Race + The End [HDTV]");
+            result.Should().Be("Initial D - 05 - 06 - The Race + The End [HDTV-720p]");
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - 05 - 06 - S01E05-06 - The Race + The End [HDTV]");
+            result.Should().Be("Initial D - 05 - 06 - S01E05-06 - The Race + The End [HDTV-720p]");
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - 05-06 - S01E05-06 - The Race + The End [HDTV]");
+            result.Should().Be("Initial D - 05-06 - S01E05-06 - The Race + The End [HDTV-720p]");
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - 05 06 - S01E05-06 - The Race + The End [HDTV]");
+            result.Should().Be("Initial D - 05 06 - S01E05-06 - The Race + The End [HDTV-720p]");
         }
 
         [Test]
@@ -220,7 +220,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - 05.06 - S01E05-06 - The Race + The End [HDTV]");
+            result.Should().Be("Initial D - 05.06 - S01E05-06 - The Race + The End [HDTV-720p]");
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
 
             var result = Mocker.Resolve<MediaFileProvider>()
                                .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
-            result.Should().Be("Initial D - 05 - 06 - S01E05-06 - The Race + The End [HDTV]");
+            result.Should().Be("Initial D - 05 - 06 - S01E05-06 - The Race + The End [HDTV-720p]");
         }
     }
 }

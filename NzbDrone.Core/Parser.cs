@@ -367,13 +367,13 @@ namespace NzbDrone.Core
 
             if (normalizedName.Contains("720p"))
             {
-                if(normalizedName.Contains("1080p"))
-                {
-                    result.Quality = QualityTypes.HDTV1080p;
-                    return result;
-                }
+               result.Quality = QualityTypes.HDTV720p;
+                return result;
+            }
 
-                result.Quality = QualityTypes.HDTV720p;
+            if (normalizedName.Contains("1080p"))
+            {
+                result.Quality = QualityTypes.HDTV1080p;
                 return result;
             }
             //Based on extension

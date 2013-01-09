@@ -157,7 +157,7 @@ namespace NzbDrone.Core.Test.ProviderTests
 
             //Act
             Mocker.Resolve<QualityProvider>();
-            Mocker.GetMock<SceneMappingProvider>().Setup(s => s.GetSeriesId("laworder")).Returns(1);
+            Mocker.GetMock<SceneMappingProvider>().Setup(s => s.GetSeriesId("laworder")).Returns(new SceneMapping { SeriesId = 1 });
 
             var series = Mocker.Resolve<SeriesProvider>().FindSeries("laworder");
 

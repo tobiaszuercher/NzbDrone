@@ -71,16 +71,13 @@ namespace NzbDrone.Core.Providers
             return map == null ? null : map.SceneName;
         }
 
-        public virtual Nullable<Int32> GetSeriesId(string cleanName)
+        public virtual SceneMapping GetSeriesId(string cleanName)
         {
             UpdateIfEmpty();
 
             var item = _database.SingleOrDefault<SceneMapping>("WHERE CleanTitle = @0", cleanName);
 
-            if (item == null)
-                return null;
-
-            return item.SeriesId;
+            return item;
         }
 
         public void UpdateIfEmpty()

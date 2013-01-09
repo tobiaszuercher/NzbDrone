@@ -165,10 +165,14 @@ namespace NzbDrone.Core.Providers
             {
                 var normalizeTitle = Parser.NormalizeTitle(title);
 
-                var seriesId = _sceneNameMappingProvider.GetSeriesId(normalizeTitle);
-                if (seriesId != null)
+                var mapping = _sceneNameMappingProvider.GetSeriesId(normalizeTitle);
+                if (mapping != null)
                 {
-                    return GetSeries(seriesId.Value);
+                    //Todo: return scene mappings (we need this info later)
+                    var sceneSeries = GetSeries(mapping.SeriesId);
+                    
+                    if (sceneSeries != null)
+                        sceneSeries.SceneMappings.Add(mapping);
                 }
 
                 var series = _database.Fetch<Series, QualityProfile>(@"SELECT * FROM Series
@@ -177,7 +181,6 @@ namespace NzbDrone.Core.Providers
 
                 return series;
             }
-
 
             catch (InvalidOperationException)
             {

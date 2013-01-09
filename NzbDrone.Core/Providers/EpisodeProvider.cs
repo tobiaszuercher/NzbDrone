@@ -208,7 +208,18 @@ namespace NzbDrone.Core.Providers
 
                     if(parseResult.SceneSource && parseResult.Series.UseSceneNumbering)
                     {
-                        episodeInfo = GetEpisodeBySceneNumbering(parseResult.Series.SeriesId, absoluteEpisodeNumber);
+                        var mapping = parseResult.Series.SceneMappings.FirstOrDefault(s => s.CleanTitle == parseResult.CleanTitle);
+
+                        if (mapping == null || mapping.SeriesId == -1)
+                            episodeInfo = GetEpisodeBySceneNumbering(parseResult.Series.SeriesId, absoluteEpisodeNumber);
+
+                        else
+                        {
+                            //Absolute episode number becomes the episode number in this case
+                            //Unless there is some case where this does not apply...
+                            logger.Trace("Using scene season + absolute number for: {0}", parseResult);
+                            episodeInfo = GetEpisodeBySceneNumbering(parseResult.Series.SeriesId, mapping.SeasonNumber, absoluteEpisodeNumber);
+                        }
 
                         if(episodeInfo != null)
                         {
@@ -221,7 +232,18 @@ namespace NzbDrone.Core.Providers
 
                     if(episodeInfo == null)
                     {
-                        episodeInfo = GetEpisode(parseResult.Series.SeriesId, absoluteEpisodeNumber);
+                        var mapping = parseResult.Series.SceneMappings.FirstOrDefault(s => s.CleanTitle == parseResult.CleanTitle);
+
+                        if(mapping == null || mapping.SeriesId == -1)
+                            episodeInfo = GetEpisode(parseResult.Series.SeriesId, absoluteEpisodeNumber);
+
+                        else
+                        {
+                            //Absolute episode number becomes the episode number in this case
+                            //Unless there is some case where this does not apply...
+                            logger.Trace("Using season + absolute number for: {0}", parseResult);
+                            episodeInfo = GetEpisode(parseResult.Series.SeriesId, mapping.SeasonNumber, absoluteEpisodeNumber);
+                        }
                     }
 
                     if (episodeInfo != null)
