@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
-using Ninject;
 using NzbDrone.Common;
 using NzbDrone.Core.Model;
 using NzbDrone.Core.Providers.Core;
@@ -28,7 +27,6 @@ namespace NzbDrone.Core.Providers
         public const string ANIME_UPDATE_URL = @"http://update.nzbdrone.com/anime/";
 
 
-        [Inject]
         public UpdateProvider(HttpProvider httpProvider, ConfigProvider configProvider,
             EnvironmentProvider environmentProvider, DiskProvider diskProvider)
         {

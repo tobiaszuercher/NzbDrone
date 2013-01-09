@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ninject;
 using NLog;
 using NzbDrone.Core.Model;
 using NzbDrone.Core.Model.Sabnzbd;
@@ -18,7 +17,6 @@ namespace NzbDrone.Core.Providers.Core
 
         private readonly IDatabase _database;
 
-        [Inject]
         public ConfigProvider(IDatabase database)
         {
             _database = database;
@@ -572,7 +570,7 @@ namespace NzbDrone.Core.Providers.Core
 
         private int GetValueInt(string key, int defaultValue = 0)
         {
-            return Convert.ToInt16(GetValue(key, defaultValue));
+            return Convert.ToInt32(GetValue(key, defaultValue));
         }
 
         public virtual string GetValue(string key, object defaultValue, bool persist = false)

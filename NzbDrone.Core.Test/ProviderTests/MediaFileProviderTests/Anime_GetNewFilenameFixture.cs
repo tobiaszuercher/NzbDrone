@@ -78,7 +78,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeNumberPadding).Returns(3);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - S01E05 - 005 - The Race [HDTV]");
         }
 
@@ -89,7 +89,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeNumberPadding).Returns(2);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV]");
         }
 
@@ -100,7 +100,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeNumberPadding).Returns(2);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - 05 - The Race [HDTV]");
         }
 
@@ -111,7 +111,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeNumberPadding).Returns(2);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - 05 - S01E05 - The Race [HDTV]");
         }
 
@@ -123,7 +123,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeAppendSubGroup).Returns(true);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV, false, new EpisodeFile{ SubGroup = "Lunar" });
+                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile { SubGroup = "Lunar" });
             result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV] [Lunar]");
         }
 
@@ -135,7 +135,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeAppendSubGroup).Returns(true);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV, false, new EpisodeFile { SubGroup = null});
+                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile { SubGroup = null });
             result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV]");
         }
 
@@ -147,7 +147,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeAppendSubGroup).Returns(true);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV, false, new EpisodeFile { SubGroup = "" });
+                               .GetNewFilename(WithOneEpisode(), _series, QualityTypes.HDTV720p, false, new EpisodeFile { SubGroup = "" });
             result.Should().Be("Initial D - S01E05 - 05 - The Race [HDTV]");
         }
 
@@ -159,7 +159,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeMultiEpisodeStyle).Returns(3);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - S01E05-06 - 05 - 06 - The Race + The End [HDTV]");
         }
 
@@ -171,7 +171,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeMultiEpisodeStyle).Returns(3);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - 05 - 06 - The Race + The End [HDTV]");
         }
 
@@ -183,7 +183,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeMultiEpisodeStyle).Returns(3);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - 05 - 06 - S01E05-06 - The Race + The End [HDTV]");
         }
 
@@ -195,7 +195,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeMultiEpisodeStyle).Returns(0);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - 05-06 - S01E05-06 - The Race + The End [HDTV]");
         }
 
@@ -207,7 +207,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeMultiEpisodeStyle).Returns(1);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - 05 06 - S01E05-06 - The Race + The End [HDTV]");
         }
 
@@ -219,7 +219,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeMultiEpisodeStyle).Returns(2);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - 05.06 - S01E05-06 - The Race + The End [HDTV]");
         }
 
@@ -231,7 +231,7 @@ namespace NzbDrone.Core.Test.ProviderTests.MediaFileProviderTests
             _fakeConfig.SetupGet(c => c.SortingAnimeMultiEpisodeStyle).Returns(3);
 
             var result = Mocker.Resolve<MediaFileProvider>()
-                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV, false, new EpisodeFile());
+                               .GetNewFilename(WithTwoEpisodes(), _series, QualityTypes.HDTV720p, false, new EpisodeFile());
             result.Should().Be("Initial D - 05 - 06 - S01E05-06 - The Race + The End [HDTV]");
         }
     }

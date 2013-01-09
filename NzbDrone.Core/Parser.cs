@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -85,7 +85,7 @@ namespace NzbDrone.Core
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled)
                                 };
 
-        private static readonly Regex NormalizeRegex = new Regex(@"((^|\W)(a|an|the|and|or|of)($|\W))|\W|_|(?:(?<=[^0-9]+)|\b)(?!(?:19\d{2}|20\d{2}))(?<!x|h)\d+(?=[^0-9ip]+|\b)",
+        private static readonly Regex NormalizeRegex = new Regex(@"((^|\W)(a|an|the|and|or|of)($|\W|_))|\W|_|(?:(?<=[^0-9]+)|\b)(?!(?:19\d{2}|20\d{2}))(?<!x|h)\d+(?=[^0-9ip]+|\b)",
                                                                  RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private static readonly Regex SimpleTitleRegex = new Regex(@"480[i|p]|720[i|p]|1080[i|p]|[x|h|x\s|h\s]264|DD\W?5\W1|\<|\>|\?|\*|\:|\||""",
@@ -104,6 +104,8 @@ namespace NzbDrone.Core
                                                           };
 
         private static readonly Regex MultiPartCleanupRegex = new Regex(@"\(\d+\)$", RegexOptions.Compiled);
+
+        private static readonly Regex LanguageRegex = new Regex(@"(?:\W|_)(?<italian>ita|italian)|(?<german>german\b)|(?<flemish>flemish)|(?<greek>greek)(?:\W|_)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         internal static EpisodeParseResult ParsePath(string path)
         {
@@ -359,13 +361,19 @@ namespace NzbDrone.Core
 
             if (name.Contains("1440x810") || name.Contains("1280x720"))
             {
-                result.Quality = QualityTypes.HDTV;
+                result.Quality = QualityTypes.HDTV720p;
                 return result;
             }
 
             if (normalizedName.Contains("720p"))
             {
-                result.Quality = QualityTypes.HDTV;
+                if(normalizedName.Contains("1080p"))
+                {
+                    result.Quality = QualityTypes.HDTV1080p;
+                    return result;
+                }
+
+                result.Quality = QualityTypes.HDTV720p;
                 return result;
             }
             //Based on extension
@@ -397,7 +405,7 @@ namespace NzbDrone.Core
                         case ".mkv":
                         case ".ts":
                             {
-                                result.Quality = QualityTypes.HDTV;
+                                result.Quality = QualityTypes.HDTV720p;
                                 break;
                             }
                     }
@@ -411,7 +419,13 @@ namespace NzbDrone.Core
 
             if (name.Contains("[HDTV]"))
             {
-                result.Quality = QualityTypes.HDTV;
+                result.Quality = QualityTypes.HDTV720p;
+                return result;
+            }
+
+            if (normalizedName.Contains("hdtv") && normalizedName.Contains("1080p"))
+            {
+                result.Quality = QualityTypes.HDTV1080p;
                 return result;
             }
 
@@ -438,16 +452,6 @@ namespace NzbDrone.Core
 
             if (lowerTitle.Contains("spanish"))
                 return LanguageType.Spanish;
-
-            if (lowerTitle.Contains("german"))
-            {
-                //Make sure it doesn't contain Germany (Since we're not using REGEX for all this)
-                if (!lowerTitle.Contains("germany"))
-                    return LanguageType.German;
-            }
-
-            if (lowerTitle.Contains("italian"))
-                return LanguageType.Italian;
 
             if (lowerTitle.Contains("danish"))
                 return LanguageType.Danish;
@@ -490,6 +494,20 @@ namespace NzbDrone.Core
 
             if (lowerTitle.Contains("portuguese"))
                 return LanguageType.Portuguese;
+
+            var match = LanguageRegex.Match(title);
+
+            if (match.Groups["italian"].Captures.Cast<Capture>().Any())
+                return LanguageType.Italian;
+
+            if (match.Groups["german"].Captures.Cast<Capture>().Any())
+                return LanguageType.German;
+
+            if (match.Groups["flemish"].Captures.Cast<Capture>().Any())
+                return LanguageType.Flemish;
+
+            if (match.Groups["greek"].Captures.Cast<Capture>().Any())
+                return LanguageType.Greek;
 
             return LanguageType.English;
         }

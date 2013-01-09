@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ninject;
 using NLog;
 using NzbDrone.Core.Repository.Quality;
 using PetaPoco;
@@ -17,7 +16,6 @@ namespace NzbDrone.Core.Providers
         {
         }
 
-        [Inject]
         public QualityProvider(IDatabase database)
         {
             _database = database;
@@ -68,8 +66,8 @@ namespace NzbDrone.Core.Providers
             var hd = new QualityProfile
             {
                 Name = "HD",
-                Allowed = new List<QualityTypes> { QualityTypes.HDTV, QualityTypes.WEBDL720p, QualityTypes.Bluray720p },
-                Cutoff = QualityTypes.HDTV
+                Allowed = new List<QualityTypes> { QualityTypes.HDTV720p, QualityTypes.WEBDL720p, QualityTypes.Bluray720p },
+                Cutoff = QualityTypes.HDTV720p
             };
 
             Add(sd);

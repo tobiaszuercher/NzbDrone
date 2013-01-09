@@ -6,28 +6,34 @@ using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Autofac;
+using Autofac.Integration.Mvc;
 using LowercaseRoutesMVC;
 using NLog.Config;
-using Ninject;
-using Ninject.Web.Mvc;
 using NLog;
+using NzbDrone.Api;
 using NzbDrone.Common;
 using NzbDrone.Core;
+using ServiceStack.CacheAccess;
+using ServiceStack.CacheAccess.Providers;
 using NzbDrone.Core.Repository.Quality;
 using NzbDrone.Web.Helpers.Binders;
+using ServiceStack.ServiceInterface;
+using SignalR;
 
 namespace NzbDrone.Web
 {
-    public class MvcApplication : NinjectHttpApplication
+    public class MvcApplication : HttpApplication
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static void RegisterRoutes(RouteCollection routes)
         {
+            routes.IgnoreRoute("api/{*pathInfo}");
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("{*robotstxt}", new { robotstxt = @"(.*/)?robots.txt(/.*)?" });
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
-
+            
             routes.MapRouteLowercase(
                 name: "WithSeasonNumber",
                 url: "{controller}/{action}/{seriesId}/{seasonNumber}"
@@ -40,9 +46,10 @@ namespace NzbDrone.Web
             );
         }
 
-        protected override void OnApplicationStarted()
-        {          
-            base.OnApplicationStarted();
+        protected void Application_Start()
+        {
+            InitContainer();
+
             RegisterRoutes(RouteTable.Routes);
             AreaRegistration.RegisterAllAreas();
 
@@ -57,14 +64,38 @@ namespace NzbDrone.Web
             Logger.Info("Fully initialized and ready.");
         }
 
-        protected override IKernel CreateKernel()
+        private void InitContainer()
         {
             Logger.Info("NzbDrone Starting up.");
             var dispatch = new CentralDispatch();
             dispatch.DedicateToHost();
 
-            dispatch.Kernel.Load(Assembly.GetExecutingAssembly());
-            return dispatch.Kernel;
+            dispatch.ContainerBuilder.RegisterAssemblyTypes(typeof(MvcApplication).Assembly).SingleInstance();
+            dispatch.ContainerBuilder.RegisterAssemblyTypes(typeof(MvcApplication).Assembly).AsImplementedInterfaces().SingleInstance();
+
+            MVCRegistration(dispatch.ContainerBuilder);
+
+            var container = dispatch.BuildContainer();
+
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            //SignalR
+            RouteTable.Routes.MapHubs();
+
+            //ServiceStack
+            dispatch.ContainerBuilder.RegisterType<MemoryCacheClient>().As<ICacheClient>().SingleInstance();
+            dispatch.ContainerBuilder.RegisterType<SessionFactory>().As<ISessionFactory>().SingleInstance();
+            new AppHost(container).Init();
+        }
+
+        private static void MVCRegistration(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new AutofacWebTypesModule());
+
+            builder.RegisterControllers(typeof(MvcApplication).Assembly).InjectActionInvoker();
+            builder.RegisterModelBinders(typeof(MvcApplication).Assembly).SingleInstance();
+
+            builder.RegisterType<ControllerActionInvoker>().As<IActionInvoker>();
         }
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
