@@ -443,6 +443,7 @@ namespace NzbDrone.Core.Test.ParserTests
         [TestCase("214 One Piece 10x14", "One Piece", 214, "", 10, 14)]
         [TestCase("Bleach - 031 - The Resolution to Kill [Lunar].avi", "Bleach", 31, "Lunar", 0, 0)]
         [TestCase("Bleach - 031 - The Resolution to Kill [Lunar]", "Bleach", 31, "Lunar", 0, 0)]
+        [TestCase("[ACX]Hack Sign 01 Role Play [Kosaka] [9C57891E].mkv", "Hack Sign", 1, "ACX", 0, 0)]
         public void parse_anime(string postTitle, string title, int absoluteEpisodeNumber, string subGroup, int seasonNumber, int episodeNumber)
         {
             var result = Parser.ParseTitle(postTitle);

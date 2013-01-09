@@ -34,7 +34,7 @@ namespace NzbDrone.Core
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                                     //Anime - [SubGroup] Title Absolute Episode Number
-                                    new Regex(@"^\[(?<subgroup>.+?)\](?:_|-|\s|\.)(?<title>.+?)(?:(?:_|-|\s|\.)+(?<absoluteepisode>\d{2,}))+",
+                                    new Regex(@"^\[(?<subgroup>.+?)\](?:_|-|\s|\.)?(?<title>.+?)(?:(?:_|-|\s|\.)+(?<absoluteepisode>\d{2,}))+",
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
 
                                     //Multi-Part episodes without a title (S01E05.S01E06)

@@ -173,6 +173,8 @@ namespace NzbDrone.Core.Providers
                     
                     if (sceneSeries != null)
                         sceneSeries.SceneMappings.Add(mapping);
+
+                    return sceneSeries;
                 }
 
                 var series = _database.Fetch<Series, QualityProfile>(@"SELECT * FROM Series
