@@ -444,6 +444,7 @@ namespace NzbDrone.Core.Test.ParserTests
         [TestCase("Bleach - 031 - The Resolution to Kill [Lunar].avi", "Bleach", 31, "Lunar", 0, 0)]
         [TestCase("Bleach - 031 - The Resolution to Kill [Lunar]", "Bleach", 31, "Lunar", 0, 0)]
         [TestCase("[ACX]Hack Sign 01 Role Play [Kosaka] [9C57891E].mkv", "Hack Sign", 1, "ACX", 0, 0)]
+        [TestCase("[SFW-sage] Bakuman S3 - 12 [720p][D07C91FC]", "Bakuman S3", 12, "SFW-sage", 0, 0)]
         public void parse_anime(string postTitle, string title, int absoluteEpisodeNumber, string subGroup, int seasonNumber, int episodeNumber)
         {
             var result = Parser.ParseTitle(postTitle);
