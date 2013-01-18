@@ -68,12 +68,16 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchTests
                 .Returns(_parseResults);
             _indexer1.Setup(c => c.FetchPartialSeason(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(_parseResults);
+            _indexer1.Setup(c => c.FetchAnime(It.IsAny<string>(), It.IsAny<int>()))
+                .Returns(_parseResults);
 
             _indexer2.Setup(c => c.FetchEpisode(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(_parseResults);
             _indexer2.Setup(c => c.FetchDailyEpisode(It.IsAny<string>(), It.IsAny<DateTime>()))
                 .Returns(_parseResults);
             _indexer2.Setup(c => c.FetchPartialSeason(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(_parseResults);
+            _indexer2.Setup(c => c.FetchAnime(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(_parseResults);
         }
 
@@ -85,12 +89,16 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchTests
                 .Throws(new Exception());
             _indexer1.Setup(c => c.FetchPartialSeason(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Throws(new Exception());
+            _indexer1.Setup(c => c.FetchAnime(It.IsAny<string>(), It.IsAny<int>()))
+                .Throws(new Exception());
 
             _indexer2.Setup(c => c.FetchEpisode(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Throws(new Exception());
             _indexer2.Setup(c => c.FetchDailyEpisode(It.IsAny<string>(), It.IsAny<DateTime>()))
                 .Throws(new Exception());
             _indexer2.Setup(c => c.FetchPartialSeason(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Throws(new Exception());
+            _indexer2.Setup(c => c.FetchAnime(It.IsAny<string>(), It.IsAny<int>()))
                 .Throws(new Exception());
 
             _indexer1.SetupGet(c => c.Name).Returns("Indexer1");

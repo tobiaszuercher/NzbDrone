@@ -39,12 +39,19 @@ namespace NzbDrone.Core.Providers.Search
             var reports = new List<EpisodeParseResult>();
             var title = GetSearchTitle(series, episode.SeasonNumber);
 
+            var absoluteEpisodeNumber = episode.AbsoluteEpisodeNumber;
+
+            if(series.UseSceneNumbering && episode.SceneAbsoluteEpisodeNumber > 0)
+            {
+                logger.Trace("Using SceneAbsoluteEpisodeNumber for {0}", episode);
+                absoluteEpisodeNumber = episode.SceneAbsoluteEpisodeNumber;
+            }
+
             Parallel.ForEach(_indexerProvider.GetEnabledIndexers(), indexer =>
             {
                 try
                 {
-                    //Todo: Handle series where each season starts from 1 (instead of real absolute episode numbers)
-                    reports.AddRange(indexer.FetchAnime(title, episode.AbsoluteEpisodeNumber));
+                    reports.AddRange(indexer.FetchAnime(title, absoluteEpisodeNumber));
                 }
 
                 catch (Exception e)
@@ -60,6 +67,25 @@ namespace NzbDrone.Core.Providers.Search
         public override SearchHistoryItem CheckReport(Series series, dynamic options, EpisodeParseResult episodeParseResult,
                                                                 SearchHistoryItem item)
         {
+            if (episodeParseResult.AbsoluteEpisodeNumbers == null || !episodeParseResult.AbsoluteEpisodeNumbers.Any())
+            {
+                logger.Trace("No absolute episode numbers were found in post, skipping.");
+                item.SearchError = ReportRejectionType.WrongEpisode;
+                return item;
+            }
+
+            Episode episode = options.Episode;
+
+            if (series.UseSceneNumbering && episode.SceneAbsoluteEpisodeNumber > 0)
+            {
+                if (!episodeParseResult.AbsoluteEpisodeNumbers.Contains(options.Episode.SceneAbsoluteEpisodeNumber))
+                {
+                    logger.Trace("Searched episode number is not contained in post, skipping.");
+                    item.SearchError = ReportRejectionType.WrongEpisode;
+                    return item;
+                }
+            }
+
             if (!episodeParseResult.AbsoluteEpisodeNumbers.Contains(options.Episode.AbsoluteEpisodeNumber))
             {
                 logger.Trace("Searched episode number is not contained in post, skipping.");

@@ -17,7 +17,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchTests.AnimeEpisodeSearchTests
         {
             Episode nullEpisode = null;
             Assert.Throws<ArgumentException>(() => 
-                                                Mocker.Resolve<EpisodeSearch>()
+                                                Mocker.Resolve<AnimeEpisodeSearch>()
                                                       .PerformSearch(_series, new { Episode = nullEpisode }, notification));
         }
 
@@ -26,7 +26,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchTests.AnimeEpisodeSearchTests
         {
             WithValidIndexers();
 
-            Mocker.Resolve<EpisodeSearch>()
+            Mocker.Resolve<AnimeEpisodeSearch>()
                   .PerformSearch(_series, new {Episode = _episode}, notification)
                   .Should()
                   .HaveCount(20);
@@ -37,7 +37,7 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchTests.AnimeEpisodeSearchTests
         {
             WithInvalidIndexers();
 
-            Mocker.Resolve<EpisodeSearch>()
+            Mocker.Resolve<AnimeEpisodeSearch>()
                   .PerformSearch(_series, new { Episode = _episode }, notification)
                   .Should()
                   .HaveCount(0);
@@ -49,36 +49,34 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchTests.AnimeEpisodeSearchTests
         public void should_use_scene_numbering_when_available()
         {
             _series.UseSceneNumbering = true;
-            _episode.SceneEpisodeNumber = 5;
-            _episode.SceneSeasonNumber = 10;
+            _episode.SceneAbsoluteEpisodeNumber = 5;
 
             WithValidIndexers();
 
-            Mocker.Resolve<EpisodeSearch>()
+            Mocker.Resolve<AnimeEpisodeSearch>()
                   .PerformSearch(_series, new { Episode = _episode }, notification)
                   .Should()
                   .HaveCount(20);
 
-            _indexer1.Verify(v => v.FetchEpisode(_series.Title, 10, 5), Times.Once());
-            _indexer2.Verify(v => v.FetchEpisode(_series.Title, 10, 5), Times.Once());
+            _indexer1.Verify(v => v.FetchAnime(_series.Title, 5), Times.Once());
+            _indexer2.Verify(v => v.FetchAnime(_series.Title, 5), Times.Once());
         }
 
         [Test]
         public void should_use_standard_numbering_when_scene_series_set_but_info_is_not_available()
         {
             _series.UseSceneNumbering = true;
-            _episode.SceneEpisodeNumber = 0;
-            _episode.SceneSeasonNumber = 0;
+            _episode.SceneAbsoluteEpisodeNumber = 0;
 
             WithValidIndexers();
 
-            Mocker.Resolve<EpisodeSearch>()
+            Mocker.Resolve<AnimeEpisodeSearch>()
                   .PerformSearch(_series, new { Episode = _episode }, notification)
                   .Should()
                   .HaveCount(20);
 
-            _indexer1.Verify(v => v.FetchEpisode(_series.Title, _episode.SeasonNumber, _episode.EpisodeNumber), Times.Once());
-            _indexer2.Verify(v => v.FetchEpisode(_series.Title, _episode.SeasonNumber, _episode.EpisodeNumber), Times.Once());
+            _indexer1.Verify(v => v.FetchAnime(_series.Title, _episode.AbsoluteEpisodeNumber), Times.Once());
+            _indexer2.Verify(v => v.FetchAnime(_series.Title, _episode.AbsoluteEpisodeNumber), Times.Once());
         }
 
         [Test]
@@ -88,13 +86,13 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchTests.AnimeEpisodeSearchTests
 
             WithValidIndexers();
 
-            Mocker.Resolve<EpisodeSearch>()
+            Mocker.Resolve<AnimeEpisodeSearch>()
                   .PerformSearch(_series, new { Episode = _episode }, notification)
                   .Should()
                   .HaveCount(20);
 
-            _indexer1.Verify(v => v.FetchEpisode(_series.Title, _episode.SeasonNumber, _episode.EpisodeNumber), Times.Once());
-            _indexer2.Verify(v => v.FetchEpisode(_series.Title, _episode.SeasonNumber, _episode.EpisodeNumber), Times.Once());
+            _indexer1.Verify(v => v.FetchAnime(_series.Title, _episode.AbsoluteEpisodeNumber), Times.Once());
+            _indexer2.Verify(v => v.FetchAnime(_series.Title, _episode.AbsoluteEpisodeNumber), Times.Once());
         }
     }
 }

@@ -47,10 +47,38 @@ namespace NzbDrone.Core.Test.ProviderTests.SearchTests.AnimeEpisodeSearchTests
         }
 
         [Test]
+        public void should_skip_if_absoluteEpisodeNumber_not_found_in_report()
+        {
+            _series.SeriesType = SeriesType.Anime;
+            _episodeParseResult.AbsoluteEpisodeNumbers = new List<int>();
+
+            //Act
+            var result = Mocker.Resolve<AnimeEpisodeSearch>().CheckReport(_series, new { Episode = _episode }, _episodeParseResult, _searchHistoryItem);
+
+            //Assert
+            result.SearchError.Should().Be(ReportRejectionType.WrongEpisode);
+        }
+
+        [Test]
+        public void should_skip_if_sceneAbsoluteEpisodeNumber_doesnt_match()
+        {
+            _series.SeriesType = SeriesType.Anime;
+            _series.UseSceneNumbering = true;
+            _episodeParseResult.AbsoluteEpisodeNumbers = new List<int> { 100 };
+            _episode.SceneAbsoluteEpisodeNumber = 5;
+
+            //Act
+            var result = Mocker.Resolve<AnimeEpisodeSearch>().CheckReport(_series, new { Episode = _episode }, _episodeParseResult, _searchHistoryItem);
+
+            //Assert
+            result.SearchError.Should().Be(ReportRejectionType.WrongEpisode);
+        }
+
+        [Test]
         public void should_skip_if_absoluteEpisodeNumber_doesnt_match()
         {
             _series.SeriesType = SeriesType.Anime;
-            _episodeParseResult.AbsoluteEpisodeNumbers = new List<int>{ 100 };
+            _episodeParseResult.AbsoluteEpisodeNumbers = new List<int> { 100 };
 
             //Act
             var result = Mocker.Resolve<AnimeEpisodeSearch>().CheckReport(_series, new { Episode = _episode }, _episodeParseResult, _searchHistoryItem);
