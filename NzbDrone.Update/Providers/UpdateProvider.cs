@@ -59,13 +59,16 @@ namespace NzbDrone.Update.Providers
                 _serviceProvider.Stop(ServiceProvider.NZBDRONE_SERVICE_NAME);
             }
 
-            //TODO:Should be able to restart service if anything beyond this point fails
+            else
+            {
+                appType = AppType.Normal;
+            }
 
+            //TODO:Should be able to restart service if anything beyond this point fails
             logger.Info("Killing all running processes");
             var processes = _processProvider.GetProcessByName(ProcessProvider.NzbDroneProccessName);
             foreach (var processInfo in processes)
             {
-                appType = AppType.Normal;
                 _processProvider.Kill(processInfo.Id);
             }
 
@@ -115,19 +118,22 @@ namespace NzbDrone.Update.Providers
             _diskProvider.CopyDirectory(_environmentProvider.GetUpdateBackUpFolder(), targetFolder);
         }
 
-
         private void StartNzbDrone(AppType appType, string targetFolder)
         {
+            logger.Info("Starting NzbDrone");
             if (appType == AppType.Service)
             {
+                logger.Info("Starting NzbDrone service");
                 _serviceProvider.Start(ServiceProvider.NZBDRONE_SERVICE_NAME);
             }
             else if(appType == AppType.Console)
             {
+                logger.Info("Starting NzbDrone with Console");
                 _processProvider.Start(Path.Combine(targetFolder, "NzbDrone.Console.exe"));
             }
             else
             {
+                logger.Info("Starting NzbDrone without Console");
                 _processProvider.Start(Path.Combine(targetFolder, "NzbDrone.exe"));
             }
         }

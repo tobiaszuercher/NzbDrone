@@ -335,6 +335,7 @@ namespace NzbDrone.Core.Test.ParserTests
         [TestCase("person.of.interest.1x19.ita.720p.bdmux.x264-novarip", LanguageType.Italian)]
         [TestCase("Salamander.S01E01.FLEMISH.HDTV.x264-BRiGAND", LanguageType.Flemish)]
         [TestCase("H.Polukatoikia.S03E13.Greek.PDTV.XviD-Ouzo", LanguageType.Greek)]
+        [TestCase("Burn.Notice.S04E15.Brotherly.Love.GERMAN.DUBBED.WS.WEBRiP.XviD.REPACK-TVP", LanguageType.German)]
         public void parse_language(string postTitle, LanguageType language)
         {
             var result = Parser.ParseLanguage(postTitle);
@@ -412,6 +413,7 @@ namespace NzbDrone.Core.Test.ParserTests
 
         [TestCase("[112461]-[FULL]-[#a.b.teevee@EFNet]-[ 666.Park.Avenue.S01E03.720p.HDTV.X264-DIMENSION ]-[02/31] - \"the.devils.address.103.720p-dimension.par2\" yEnc", "666.Park.Avenue.S01E03.720p.HDTV.X264-DIMENSION")]
         [TestCase("[112438]-[FULL]-[#a.b.teevee@EFNet]-[ Downton_Abbey.3x05.HDTV_x264-FoV ]-[01/26] - \"downton_abbey.3x05.hdtv_x264-fov.nfo\" yEnc", "Downton_Abbey.3x05.HDTV_x264-FoV")]
+        [TestCase("[ 21154 ] - [ TrollHD ] - [ 00/73 ] - \"MythBusters S03E20 Escape Slide Parachute 1080i HDTV-UPSCALE DD5.1 MPEG2-TrollHD.nzb\" yEnc", "MythBusters S03E20 Escape Slide Parachute 1080i HDTV-UPSCALE DD5.1 MPEG2-TrollHD.nzb")]
         public void parse_header(string title, string expected)
         {
             Parser.ParseHeader(title).Should().Be(expected);

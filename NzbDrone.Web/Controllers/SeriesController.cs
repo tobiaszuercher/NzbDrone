@@ -70,6 +70,9 @@ namespace NzbDrone.Web.Controllers
             series.Monitored = seriesModel.Monitored;
             series.SeasonFolder = seriesModel.SeasonFolder;
             series.QualityProfileId = seriesModel.QualityProfileId;
+
+            var oldPath = series.Path;
+
             series.Path = seriesModel.Path;
             series.BacklogSetting = seriesModel.BacklogSetting;
             series.SeriesType = seriesModel.SeriesType;
@@ -81,6 +84,9 @@ namespace NzbDrone.Web.Controllers
                 series.CustomStartDate = null;
 
             _seriesProvider.UpdateSeries(series);
+
+            if(oldPath != series.Path)
+                _jobProvider.QueueJob(typeof(DiskScanJob), new {SeriesId = series.SeriesId});
 
             return new EmptyResult();
         }

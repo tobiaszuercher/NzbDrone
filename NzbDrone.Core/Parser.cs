@@ -98,7 +98,10 @@ namespace NzbDrone.Core
                                                           {
                                                                 new Regex(@"(?:\[.+\]\-\[.+\]\-\[.+\]\-\[)(?<nzbTitle>.+)(?:\]\-.+)",
                                                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
-
+                                                                
+                                                                new Regex(@"(?:\[.+\]\W+\[.+\]\W+\[.+\]\W+\"")(?<nzbTitle>.+)(?:\"".+)",
+                                                                        RegexOptions.IgnoreCase | RegexOptions.Compiled),
+                                                                    
                                                                 new Regex(@"(?:\[)(?<nzbTitle>.+)(?:\]\-.+)",
                                                                         RegexOptions.IgnoreCase | RegexOptions.Compiled),
                                                           };
@@ -350,6 +353,12 @@ namespace NzbDrone.Core
                 }
 
                 result.Quality = QualityTypes.WEBDL480p;
+                return result;
+            }
+
+            if (normalizedName.Contains("trollhd") || normalizedName.Contains("rawhd"))
+            {
+                result.Quality = QualityTypes.RAWHD;
                 return result;
             }
 
