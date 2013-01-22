@@ -85,8 +85,7 @@ namespace NzbDrone.Core.Providers
                 logger.Warn("No episodes in database found for series: {0} Season: {1}.", seriesId, seasonNumber);
                 return new List<int>();
             }
-
-            return _partialSeasonSearch.Search(series, new { SeasonNumber = seasonNumber, Episodes = episodes }, notification);
+            return _partialSeasonSearch.Search(series, new {SeasonNumber = seasonNumber, Episodes = episodes}, notification);
         }
     }
 }

@@ -23,12 +23,13 @@ namespace NzbDrone.Core.Providers
         private readonly SignalRProvider _signalRProvider;
         private readonly ConfigProvider _configProvider;
         private readonly RecycleBinProvider _recycleBinProvider;
+        private readonly MediaInfoProvider _mediaInfoProvider;
 
         public DiskScanProvider(DiskProvider diskProvider, EpisodeProvider episodeProvider,
                                 SeriesProvider seriesProvider, MediaFileProvider mediaFileProvider,
                                 ExternalNotificationProvider externalNotificationProvider, DownloadProvider downloadProvider,
                                 SignalRProvider signalRProvider, ConfigProvider configProvider,
-                                RecycleBinProvider recycleBinProvider)
+                                RecycleBinProvider recycleBinProvider, MediaInfoProvider mediaInfoProvider)
         {
             _diskProvider = diskProvider;
             _episodeProvider = episodeProvider;
@@ -39,6 +40,7 @@ namespace NzbDrone.Core.Providers
             _signalRProvider = signalRProvider;
             _configProvider = configProvider;
             _recycleBinProvider = recycleBinProvider;
+            _mediaInfoProvider = mediaInfoProvider;
         }
 
         public DiskScanProvider()
@@ -90,6 +92,9 @@ namespace NzbDrone.Core.Providers
                 }
             }
 
+            //Todo: Find the "best" episode file for all found episodes and import that one
+            //Todo: Move the episode linking to here, instead of import (or rename import)
+
             series.LastDiskSync = DateTime.Now;
             _seriesProvider.UpdateSeries(series);
 
@@ -107,9 +112,9 @@ namespace NzbDrone.Core.Providers
             }
 
             long size = _diskProvider.GetSize(filePath);
+            var runTime = _mediaInfoProvider.GetRunTime(filePath);
 
-            //Skip any file under 70MB - New samples don't even have sample in the name...
-            if (size < Constants.IgnoreFileSize)
+            if(size < Constants.IgnoreFileSize && runTime < 480)
             {
                 Logger.Trace("[{0}] appears to be a sample. skipping.", filePath);
                 return null;
@@ -160,6 +165,9 @@ namespace NzbDrone.Core.Providers
             episodeFile.SceneName = Path.GetFileNameWithoutExtension(filePath.NormalizePath());
             episodeFile.ReleaseGroup = parseResult.ReleaseGroup;
             episodeFile.SubGroup = parseResult.SubGroup;
+
+            //Todo: We shouldn't actually import the file until we confirm its the only one we want.
+            //Todo: Separate episodeFile creation from importing (pass file to import to import)
             var fileId = _mediaFileProvider.Add(episodeFile);
 
             //Link file to all episodes
@@ -170,7 +178,6 @@ namespace NzbDrone.Core.Providers
                 _episodeProvider.UpdateEpisode(ep);
                 Logger.Debug("Linking [{0}] > [{1}]", filePath, ep);
             }
-
 
             return episodeFile;
         }

@@ -142,6 +142,7 @@
     <Compile Include="IndexerTests\NzbxFixture.cs" />
     <Compile Include="JobTests\RenameSeasonJobFixture.cs" />
     <Compile Include="ProviderTests\MediaFileProviderTests\Anime_GetNewFilenameFixture.cs" />
+    <Compile Include="ProviderTests\DecisionEngineTests\LanguageSpecificationFixture.cs" />
     <Compile Include="ProviderTests\RootDirProviderTests\FreeSpaceOnDrivesFixture.cs" />
     <Compile Include="ProviderTests\SearchTests\AnimeEpisodeSearchTests\CheckReportFixture.cs" />
     <Compile Include="ProviderTests\SearchTests\AnimeEpisodeSearchTests\PerformSearchFixture.cs" />

@@ -362,6 +362,12 @@ namespace NzbDrone.Core
                 return result;
             }
 
+            if (normalizedName.Contains("trollhd") || normalizedName.Contains("rawhd"))
+            {
+                result.Quality = QualityTypes.RAWHD;
+                return result;
+            }
+
             if (normalizedName.Contains("bd720p") || normalizedName.Contains("bdh264720p") || normalizedName.Contains("bdx264720p"))
             {
                 result.Quality = QualityTypes.Bluray720p;
