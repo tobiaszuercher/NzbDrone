@@ -72,11 +72,9 @@ namespace NzbDrone.Host.Owin
 
             try
             {
-            	// options.ServerFactory = new 
+                _host = WebApp.Start(options, BuildApp);
                 //_host = WebApp.Start(OwinServiceProviderFactory.Create(), options, BuildApp);
-                //_host = WebApp.Start(options, BuildApp);
-                
-                _host = WebApp.Start(OwinServiceProviderFactory.Create(), options, BuildApp);
+
             }
             catch (TargetInvocationException ex)
             {
