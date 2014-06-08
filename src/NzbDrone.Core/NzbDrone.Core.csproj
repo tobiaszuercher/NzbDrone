@@ -205,6 +205,8 @@
     <Compile Include="Datastore\Migration\051_download_client_import.cs" />
     <Compile Include="Datastore\Migration\052_add_columns_for_anime.cs" />
     <Compile Include="Datastore\Migration\053_add_series_sorttitle.cs" />
+    <Compile Include="Datastore\Migration\054_rename_profiles.cs" />
+    <Compile Include="Datastore\Migration\055_drop_old_profile_columns.cs" />
     <Compile Include="Datastore\Migration\Framework\MigrationContext.cs" />
     <Compile Include="Datastore\Migration\Framework\MigrationController.cs" />
     <Compile Include="Datastore\Migration\Framework\MigrationExtension.cs" />
@@ -222,14 +224,17 @@
     <Compile Include="Datastore\ModelNotFoundException.cs" />
     <Compile Include="Datastore\PagingSpec.cs" />
     <Compile Include="Datastore\TableMapping.cs" />
+    <Compile Include="DecisionEngine\DownloadDecision.cs" />
+    <Compile Include="DecisionEngine\Rejection.cs" />
+    <Compile Include="DecisionEngine\RejectionType.cs" />
     <Compile Include="DecisionEngine\Specifications\RetrySpecification.cs" />
     <Compile Include="DecisionEngine\Specifications\BlacklistSpecification.cs" />
-    <Compile Include="DecisionEngine\Specifications\DownloadDecision.cs" />
     <Compile Include="DecisionEngine\IRejectWithReason.cs" />
     <Compile Include="DecisionEngine\IDecisionEngineSpecification.cs" />
     <Compile Include="DecisionEngine\Specifications\CutoffSpecification.cs" />
     <Compile Include="DecisionEngine\Specifications\NotRestrictedReleaseSpecification.cs" />
     <Compile Include="DecisionEngine\Specifications\NotSampleSpecification.cs" />
+    <Compile Include="DecisionEngine\Specifications\RssSync\DelaySpecification.cs" />
     <Compile Include="DecisionEngine\Specifications\RssSync\ProperSpecification.cs" />
     <Compile Include="DecisionEngine\Specifications\Search\EpisodeRequestedSpecification.cs" />
     <Compile Include="DecisionEngine\Specifications\Search\SeriesSpecification.cs" />
@@ -281,6 +286,9 @@
     <Compile Include="Download\DownloadClientStatus.cs" />
     <Compile Include="Download\FailedDownloadService.cs" />
     <Compile Include="Download\DownloadItemStatus.cs" />
+    <Compile Include="Download\Held\HeldRelease.cs" />
+    <Compile Include="Download\Held\HeldReleaseRepository.cs" />
+    <Compile Include="Download\Held\HeldReleaseService.cs" />
     <Compile Include="Download\TrackedDownload.cs" />
     <Compile Include="Download\DownloadFailedEvent.cs" />
     <Compile Include="Download\DownloadApprovedReports.cs" />
@@ -310,6 +318,7 @@
     <Compile Include="Housekeeping\Housekeepers\CleanupAdditionalNamingSpecs.cs" />
     <Compile Include="Housekeeping\Housekeepers\CleanupOrphanedBlacklist.cs" />
     <Compile Include="Housekeeping\Housekeepers\CleanupDuplicateMetadataFiles.cs" />
+    <Compile Include="Housekeeping\Housekeepers\CleanupOrphanedHeldReleases.cs" />
     <Compile Include="Housekeeping\Housekeepers\UpdateAnimeCategories.cs" />
     <Compile Include="Housekeeping\Housekeepers\UpdateCleanTitleForSeries.cs" />
     <Compile Include="Housekeeping\Housekeepers\CleanupOrphanedEpisodeFiles.cs" />
@@ -343,6 +352,7 @@
     <Compile Include="Indexers\Newznab\NewznabPreProcessor.cs" />
     <Compile Include="Indexers\Newznab\SizeParsingException.cs" />
     <Compile Include="Indexers\RssSyncCommand.cs" />
+    <Compile Include="Indexers\RssSyncCompleteEvent.cs" />
     <Compile Include="Indexers\XElementExtensions.cs" />
     <Compile Include="Instrumentation\Commands\ClearLogCommand.cs" />
     <Compile Include="Instrumentation\Commands\DeleteUpdateLogFilesCommand.cs" />
@@ -452,6 +462,11 @@
     <Compile Include="Organizer\SampleResult.cs" />
     <Compile Include="Parser\InvalidDateException.cs" />
     <Compile Include="Parser\Model\SeriesTitleInfo.cs" />
+    <Compile Include="Profiles\Profile.cs" />
+    <Compile Include="Profiles\ProfileInUseException.cs" />
+    <Compile Include="Profiles\ProfileQualityItem.cs" />
+    <Compile Include="Profiles\ProfileRepository.cs" />
+    <Compile Include="Profiles\ProfileService.cs" />
     <Compile Include="ProgressMessaging\CommandUpdatedEvent.cs" />
     <Compile Include="ProgressMessaging\ProgressMessageTarget.cs" />
     <Compile Include="Instrumentation\SetLoggingLevel.cs" />
@@ -556,16 +571,13 @@
     <Compile Include="Parser\QualityParser.cs" />
     <Compile Include="Qualities\QualitiesBelowCutoff.cs" />
     <Compile Include="Qualities\QualityModelComparer.cs" />
-    <Compile Include="Qualities\QualityProfileItem.cs" />
     <Compile Include="Rest\JsonNetSerializer.cs" />
     <Compile Include="RootFolders\RootFolderRepository.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="ThingiProvider\ConfigContractNotFoundException.cs" />
     <Compile Include="ThingiProvider\Events\ProviderUpdatedEvent.cs" />
     <Compile Include="ThingiProvider\IProvider.cs" />
-    <Compile Include="Qualities\QualityProfileInUseException.cs" />
     <Compile Include="Qualities\QualityDefinitionRepository.cs" />
-    <Compile Include="Qualities\QualityProfileRepository.cs" />
     <Compile Include="Queue\Queue.cs" />
     <Compile Include="Queue\UpdateQueueEvent.cs" />
     <Compile Include="Queue\QueueScheduler.cs" />
@@ -672,9 +684,6 @@
     <Compile Include="Notifications\Prowl\ProwlService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Qualities\QualityProfileService.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Qualities\QualityDefinitionService.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -698,7 +707,6 @@
     <Compile Include="Instrumentation\Log.cs" />
     <Compile Include="History\History.cs" />
     <Compile Include="Qualities\QualityDefinition.cs" />
-    <Compile Include="Qualities\QualityProfile.cs" />
     <Compile Include="RootFolders\RootFolder.cs" />
     <Compile Include="Tv\Series.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -13,10 +13,14 @@ namespace NzbDrone.Api.Extensions.Pipelines
 
         private void Handle(NancyContext context)
         {
-            if (!context.Response.Headers.ContainsKey("X-ApplicationVersion"))
+            var header = "X-ApplicationVersion";
+
+            if (context.Response.Headers.ContainsKey(header))
             {
-                context.Response.Headers.Add("X-ApplicationVersion", BuildInfo.Version.ToString());
+                return;
             }
+
+            context.Response.Headers.Add(header, BuildInfo.Version.ToString());
         }
     }
 }

@@ -99,7 +99,7 @@ namespace NzbDrone.Api.Indexers
                 release.InjectFrom(downloadDecision.RemoteEpisode.Release);
                 release.InjectFrom(downloadDecision.RemoteEpisode.ParsedEpisodeInfo);
                 release.InjectFrom(downloadDecision);
-                release.Rejections = downloadDecision.Rejections.ToList();
+                release.Rejections = downloadDecision.Rejections.Select(r => r.Reason).ToList();
                 release.DownloadAllowed = downloadDecision.RemoteEpisode.DownloadAllowed;
 
                 result.Add(release);

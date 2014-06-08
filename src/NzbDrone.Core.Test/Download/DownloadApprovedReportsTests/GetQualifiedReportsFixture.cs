@@ -4,9 +4,11 @@ using System.Linq;
 using FizzWare.NBuilder;
 using FluentAssertions;
 using NUnit.Framework;
+using NzbDrone.Core.DecisionEngine;
 using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.Download;
 using NzbDrone.Core.Parser.Model;
+using NzbDrone.Core.Profiles;
 using NzbDrone.Core.Qualities;
 using NzbDrone.Core.Test.Framework;
 using NzbDrone.Core.Tv;
@@ -38,7 +40,7 @@ namespace NzbDrone.Core.Test.Download.DownloadApprovedReportsTests
             remoteEpisode.Release.Size = size;
 
             remoteEpisode.Series = Builder<Series>.CreateNew()
-                                                  .With(e => e.QualityProfile = new QualityProfile { Items = Qualities.QualityFixture.GetDefaultQualities() })
+                                                  .With(e => e.Profile = new Profile { Items = Qualities.QualityFixture.GetDefaultQualities() })
                                                   .Build();
 
             return remoteEpisode;
@@ -48,8 +50,8 @@ namespace NzbDrone.Core.Test.Download.DownloadApprovedReportsTests
         public void should_return_an_empty_list_when_none_are_appproved()
         {
             var decisions = new List<DownloadDecision>();
-            decisions.Add(new DownloadDecision(null, "Failure!"));
-            decisions.Add(new DownloadDecision(null, "Failure!"));
+            decisions.Add(new DownloadDecision(null, new Rejection("Failure!")));
+            decisions.Add(new DownloadDecision(null, new Rejection("Failure!")));
 
             Subject.GetQualifiedReports(decisions).Should().BeEmpty();
         }

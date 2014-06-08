@@ -52,6 +52,7 @@ namespace NzbDrone.Core.IndexerSearch
 
             foreach (var episode in missing)
             {
+                //TODO: Add a flag to the search to state it is a "scheduled" search
                 var decisions = _nzbSearchService.EpisodeSearch(episode);
                 var downloaded = _downloadApprovedReports.DownloadApproved(decisions);
                 downloadedCount += downloaded.Count;

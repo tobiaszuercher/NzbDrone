@@ -60,7 +60,7 @@ namespace NzbDrone.Api.Series
             UpdateResource = UpdateSeries;
             DeleteResource = DeleteSeries;
 
-            SharedValidator.RuleFor(s => s.QualityProfileId).ValidId();
+            SharedValidator.RuleFor(s => s.ProfileId).ValidId();
 
             SharedValidator.RuleFor(s => s.Path)
                            .Cascade(CascadeMode.StopOnFirstFailure)

@@ -7,7 +7,7 @@ define(
         'Series/Index/EmptyView',
         'Series/SeriesCollection',
         'Cells/SeriesTitleCell',
-        'Cells/QualityProfileCell',
+        'Cells/ProfileCell',
         'Cells/SeriesStatusCell',
         'Cells/SeasonFolderCell',
         'Shared/Toolbar/ToolbarLayout',
@@ -18,7 +18,7 @@ define(
                  EmptyView,
                  SeriesCollection,
                  SeriesTitleCell,
-                 QualityProfileCell,
+                 ProfileCell,
                  SeriesStatusCell,
                  SeasonFolderCell,
                  ToolbarLayout,
@@ -32,10 +32,10 @@ define(
             },
 
             ui: {
-                monitored      : '.x-monitored',
-                qualityProfiles: '.x-quality-profiles',
-                rootFolder     : '.x-root-folder',
-                selectedCount  : '.x-selected-count'
+                monitored     : '.x-monitored',
+                profiles      : '.x-profiles',
+                rootFolder    : '.x-root-folder',
+                selectedCount : '.x-selected-count'
             },
 
             events: {
@@ -63,9 +63,9 @@ define(
                         cellValue : 'this'
                     },
                     {
-                        name      : 'qualityProfileId',
-                        label     : 'Quality',
-                        cell      : QualityProfileCell
+                        name : 'profileId',
+                        label: 'Profile',
+                        cell : ProfileCell
                     },
                     {
                         name      : 'seasonFolder',
